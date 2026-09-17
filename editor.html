@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hymn Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --paper:#F8F9FA; --surface:#FFFFFF; --sunken:#EDEFF2;
+  --ink:#15191E; --ink-2:#4B5560; --ink-3:#6E7883;
+  --rule:#D6DBE0; --rule-soft:#E6E9ED;
+  --accent:#22405C; --accent-ink:#FFFFFF; --accent-soft:#E3EAF1;
+  --mark:#7E6026; --warn:#8A5A1E; --good:#2F6B4F;
+  --sans:"Libre Franklin","Helvetica Neue",Arial,sans-serif;
+  --serif:"Source Serif 4",Georgia,serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1317; --surface:#171C22; --sunken:#1E242B;
+    --ink:#E7EAEE; --ink-2:#AEB8C2; --ink-3:#7E8994;
+    --rule:#2B333B; --rule-soft:#232A31;
+    --accent:#8FB9D9; --accent-ink:#0F1317; --accent-soft:#1C2B38;
+    --mark:#C9A961; --warn:#D6A55E; --good:#79C4A0;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.55;padding-block:0 60px}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{border-bottom:2px solid var(--ink);padding-block:34px 18px;margin-bottom:26px}
+h1{font-family:var(--serif);font-size:30px;margin:0 0 6px;font-weight:600}
+.sub{color:var(--ink-2);margin:0;font-size:15.5px;max-width:62ch}
+h2{font-family:var(--serif);font-size:20px;margin:30px 0 10px;font-weight:600}
+label{display:block;font-size:13px;font-weight:600;letter-spacing:.02em;
+  margin:14px 0 5px;color:var(--ink-2)}
+.hint{font-size:13px;color:var(--ink-3);margin:4px 0 0;font-weight:400}
+input,textarea{width:100%;font:inherit;color:inherit;background:var(--surface);
+  border:1px solid var(--rule);border-radius:4px;padding:11px 12px}
+textarea{font-family:var(--serif);line-height:1.5;resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:48px;padding:0 18px;border:1px solid var(--rule);border-radius:4px;
+  background:var(--surface);color:var(--ink);font:inherit;font-weight:500;cursor:pointer}
+.btn:hover{background:var(--sunken)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn-primary:hover{filter:brightness(1.08)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.notice{border-left:3px solid var(--warn);background:var(--sunken);padding:13px 15px;
+  font-size:14.5px;line-height:1.55;margin:0 0 20px;color:var(--ink)}
+.notice strong{color:var(--ink)}
+.msg{margin-top:14px;font-size:14.5px;min-height:22px}
+.msg.ok{color:var(--good);font-weight:500}
+.msg.bad{color:var(--warn);font-weight:500}
+ul.list{list-style:none;padding:0;margin:0;border-top:1px solid var(--rule-soft)}
+ul.list li{display:flex;align-items:baseline;gap:12px;padding:11px 2px;
+  border-bottom:1px solid var(--rule-soft)}
+.num{font-family:var(--serif);font-weight:600;color:var(--accent);min-width:46px;
+  font-variant-numeric:tabular-nums}
+.ttl{flex:1;font-family:var(--serif)}
+.meta{font-size:13px;color:var(--ink-3)}
+.rm{border:0;background:transparent;color:var(--warn);cursor:pointer;font:inherit;
+  font-size:14px;padding:4px 6px}
+.rm:hover{text-decoration:underline}
+pre{background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+  padding:14px;overflow-x:auto;font-size:13px;line-height:1.5;max-height:320px}
+.empty{color:var(--ink-3);font-size:15px;padding:16px 0}
+code{background:var(--sunken);border:1px solid var(--rule-soft);border-radius:3px;
+  padding:1px 5px;font-size:14px}
+ol{padding-left:20px;color:var(--ink-2);max-width:62ch}
+ol li{margin-bottom:7px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Hymn Editor</h1>
+  <p class="sub">Builds <code>extra-hymns.json</code>, the file that adds hymns to the
+  catalog or corrects ones already in it. Nothing here touches the live site until
+  you upload the file yourself.</p>
+</header>
+
+<div class="notice">
+  <strong>Before you add a hymn, check who owns the words.</strong> The 1961 Trinity
+  Hymnal texts are public domain, which is why they could be included. Hymns written
+  since then usually are not. If a hymn is under copyright, you need permission or a
+  licence such as CCLI before putting it on a public web page.
+</div>
+
+<h2>The hymn</h2>
+
+<div class="row">
+  <div>
+    <label for="num">Hymn number</label>
+    <input id="num" type="number" min="1" max="999" inputmode="numeric" placeholder="731">
+    <p class="hint">A number already in use replaces that hymn.</p>
+  </div>
+  <div>
+    <label for="tune">Tune name</label>
+    <input id="tune" type="text" placeholder="Nettleton">
+    <p class="hint">Optional.</p>
+  </div>
+</div>
+
+<label for="title">First line, as it should appear in the list</label>
+<input id="title" type="text" placeholder="Leave empty to use the first line of verse one">
+
+<div class="row">
+  <div>
+    <label for="meter">Meter</label>
+    <input id="meter" type="text" placeholder="8.7.8.7 Double">
+  </div>
+  <div>
+    <label for="src">Scripture</label>
+    <input id="src" type="text" placeholder="Psalm 23">
+  </div>
+</div>
+
+<label for="verses">Verses</label>
+<p class="hint" style="margin:0 0 6px">One line per line, exactly as it should be sung.
+Leave a blank line between verses. Do not number them, the app does that.</p>
+<textarea id="verses" rows="12" placeholder="First line of verse one,&#10;second line of verse one;&#10;third line,&#10;fourth line.&#10;&#10;First line of verse two,&#10;second line of verse two;"></textarea>
+
+<label for="refrain">Chorus</label>
+<p class="hint" style="margin:0 0 6px">Optional. Enter it once. The app repeats it after
+every verse and labels it, so it never gets numbered as a verse.</p>
+<textarea id="refrain" rows="5" placeholder="First line of the chorus,&#10;second line of the chorus."></textarea>
+
+<label for="note">Note for the singers</label>
+<input id="note" type="text" placeholder="Optional, for example: the last two lines of each stanza are sung twice.">
+
+<div class="actions">
+  <button class="btn btn-primary" id="add" type="button">Add this hymn</button>
+  <button class="btn" id="clear" type="button">Clear the form</button>
+</div>
+<p class="msg" id="msg"></p>
+
+<h2>Hymns in the file</h2>
+<ul class="list" id="list"></ul>
+<p class="empty" id="empty">Nothing added yet.</p>
+
+<div class="actions">
+  <button class="btn btn-primary" id="download" type="button">Download extra-hymns.json</button>
+  <button class="btn" id="copy" type="button">Copy the text instead</button>
+  <label class="btn" for="load" style="margin:0">Load an existing file
+    <input id="load" type="file" accept=".json,application/json" hidden></label>
+</div>
+<p class="msg" id="msg2"></p>
+
+<h2>What the file looks like</h2>
+<pre id="out">[]</pre>
+
+<h2>Putting it live</h2>
+<ol>
+  <li>Download the file, or copy the text into <code>extra-hymns.json</code>.</li>
+  <li>Put it in the repository beside <code>index.html</code>, replacing the old one.</li>
+  <li>Commit. The app picks added hymns up on the next open with a connection,
+      with no version bump needed.</li>
+</ol>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+var entries = [];
+var $ = function(id){ return document.getElementById(id); };
+
+function blocks(text){
+  return String(text || "")
+    .replace(/\r/g, "")
+    .split(/\n\s*\n/)
+    .map(function(b){ return b.split("\n").map(function(l){ return l.trim(); }).filter(Boolean); })
+    .filter(function(b){ return b.length; });
+}
+
+function say(el, text, ok){
+  el.textContent = text;
+  el.className = "msg " + (text ? (ok ? "ok" : "bad") : "");
+}
+
+function render(){
+  var list = $("list");
+  entries.sort(function(a, b){ return a.n - b.n; });
+  list.innerHTML = entries.map(function(h, i){
+    var bits = [h.v.length + (h.v.length === 1 ? " verse" : " verses")];
+    if (h.refrain) bits.push("chorus");
+    if (h.tune) bits.push(h.tune);
+    return '<li><span class="num">' + h.n + '</span>' +
+           '<span class="ttl">' + h.t.replace(/[<>&]/g, "") + '</span>' +
+           '<span class="meta">' + bits.join(" · ") + '</span>' +
+           '<button class="rm" data-i="' + i + '" type="button">remove</button></li>';
+  }).join("");
+  $("empty").hidden = entries.length > 0;
+  $("out").textContent = JSON.stringify(entries, null, 1);
+}
+
+$("list").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-i]");
+  if (!b) return;
+  entries.splice(parseInt(b.dataset.i, 10), 1);
+  render();
+});
+
+$("add").addEventListener("click", function(){
+  var n = parseInt($("num").value, 10);
+  if (!n || n < 1){ say($("msg"), "Give the hymn a number.", false); $("num").focus(); return; }
+  var v = blocks($("verses").value);
+  if (!v.length){ say($("msg"), "Type at least one verse.", false); $("verses").focus(); return; }
+
+  var h = { n: n, t: ($("title").value.trim() || v[0][0]) };
+  if ($("tune").value.trim())  h.tune  = $("tune").value.trim();
+  if ($("meter").value.trim()) h.meter = $("meter").value.trim();
+  if ($("src").value.trim())   h.src   = $("src").value.trim();
+  h.v = v;
+  var r = blocks($("refrain").value);
+  if (r.length) h.refrain = r[0];
+  if ($("note").value.trim()) h.note = $("note").value.trim();
+
+  var existing = entries.findIndex(function(x){ return x.n === n; });
+  if (existing > -1) entries[existing] = h; else entries.push(h);
+
+  render();
+  say($("msg"), "Hymn " + n + " added, " + v.length +
+      (v.length === 1 ? " verse" : " verses") + (h.refrain ? " and a chorus." : "."), true);
+  $("clear").click();
+  $("num").value = n + 1;
+});
+
+$("clear").addEventListener("click", function(){
+  ["num","title","tune","meter","src","verses","refrain","note"].forEach(function(id){
+    $(id).value = "";
+  });
+});
+
+$("download").addEventListener("click", function(){
+  if (!entries.length){ say($("msg2"), "Add a hymn first.", false); return; }
+  var blob = new Blob([JSON.stringify(entries, null, 1)], { type: "application/json" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "extra-hymns.json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  say($("msg2"), "Downloaded. Put it beside index.html in the repository.", true);
+});
+
+$("copy").addEventListener("click", function(){
+  var text = JSON.stringify(entries, null, 1);
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      say($("msg2"), "Copied. Paste it into extra-hymns.json.", true);
+    }).catch(function(){ say($("msg2"), "Could not copy. Select the text below instead.", false); });
+  } else {
+    say($("msg2"), "Copying is not available here. Select the text below instead.", false);
+  }
+});
+
+$("load").addEventListener("change", function(e){
+  var file = e.target.files && e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(){
+    try {
+      var data = JSON.parse(reader.result);
+      if (!Array.isArray(data)) throw new Error("not a list");
+      entries = data.filter(function(h){
+        return h && typeof h.n === "number" && Array.isArray(h.v) && h.v.length;
+      });
+      render();
+      say($("msg2"), "Loaded " + entries.length +
+          (entries.length === 1 ? " hymn." : " hymns.") + " Add to it, then download again.", true);
+    } catch (err) {
+      say($("msg2"), "That file could not be read as a hymn list.", false);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+render();
+})();
+</script>
+</body>
+</html>
