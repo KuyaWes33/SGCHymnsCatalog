@@ -147,6 +147,13 @@ gave them. It sounds like a plain organ, which is what it is for.
 Notes are scheduled a few seconds ahead rather than all at once, so a long
 hymn does not stall an older phone when playback starts.
 
+An iPhone files sound made this way under the same heading as a notification
+chime, which the Ring/Silent switch mutes. That is why a tune would play on a
+computer and be silent on a phone. The app now asks for the heading music
+apps use, and keeps a silent clip running underneath the tune on older
+phones that have no way to be asked, so the switch no longer decides whether
+the congregation can hear the tune.
+
 **Choruses.** The source prints a chorus once, unlabelled, straight after
 verse one. Left alone, that makes the chorus look like verse two and pushes
 the real verse two to three. 85 hymns now show the chorus separately, under
@@ -214,8 +221,9 @@ README.md               this file
 **The app does not install on an iPhone.** It has to be Safari. Chrome on
 iOS does not offer Add to Home Screen.
 
-**A correction is not showing up.** `VERSION` in `sw.js` was probably not
-bumped. Change it, commit, and reopen the app with a connection.
+**A correction is not showing up.** Reopen the app with a connection: the
+page is fetched fresh whenever there is one. If it still shows the old text,
+the phone has no signal and is reading its stored copy.
 
 **It does not work offline.** Check that the site is served over HTTPS and
 that it has been opened at least once with a connection.
@@ -223,6 +231,10 @@ that it has been opened at least once with a connection.
 **A tune will not play.** Confirm the file exists in `tunes/` with the name
 the app expects, `Th1_` plus the three digit hymn number, for example
 `Th1_087.mid`.
+
+**A tune is silent on a phone.** Check the volume first: the tune follows the
+media volume, so turn it up with the side buttons while the tune is playing,
+not before. On an iPhone, also check the Ring/Silent switch.
 
 **A hymn looks wrong.** Report the number. Nearly everything is a one line
 change in the data.
