@@ -1,0 +1,21 @@
+CHORUS STATUS
+
+85 hymns show the chorus separately from the numbered verses.
+Nothing is left open.
+
+Left numbered as printed, by your decision:
+  138, 158, 636, 673
+
+  218  numbered as printed, with a note on the hymn screen that the
+       last two lines of each stanza are sung twice
+
+Separated after you checked them against the book:
+  78, 144, 406, 608, 632, 675, 677, 679, 681, 690, 693, 694, 696,
+  708, 709, 711, 712, 718, 719, 730
+
+Separated automatically, by two independent signals:
+  the remaining 65
+
+If a chorus ever turns up in the wrong place, the fix is one line in
+refrains.py: add the hymn number to CONFIRMED_BLOCK2 to separate it,
+or to NOT_A_CHORUS to leave it numbered.
