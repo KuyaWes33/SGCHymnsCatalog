@@ -1407,11 +1407,27 @@ function setupAudio(h){
    scheduled a few seconds ahead rather than all at once. That keeps an older
    phone from stalling when playback starts. */
 var LOOKAHEAD = 4, TICK = 1000;
-function playTune(tune){
+/* iPhones only let audio start inside the tap that asked for it. The tune has
+   to be fetched first, and by the time that returns the tap is long over, so
+   the audio engine is started here, synchronously, before anything is
+   fetched. The silent blip is what actually unlocks it on iOS. */
+function unlockAudio(){
   var Ctx = window.AudioContext || window.webkitAudioContext;
-  if (!Ctx){ toast("This browser cannot play the tune"); return; }
+  if (!Ctx) return null;
   if (!actx) actx = new Ctx();
-  if (actx.state === "suspended") actx.resume();
+  if (actx.state === "suspended" && actx.resume) actx.resume();
+  try {
+    var o = actx.createOscillator(), g = actx.createGain();
+    g.gain.value = 0;
+    o.connect(g); g.connect(actx.destination);
+    o.start(); o.stop(actx.currentTime + 0.01);
+  } catch (e) {}
+  return actx;
+}
+
+function playTune(tune){
+  if (!actx){ toast("This browser cannot play the tune"); return; }
+  if (actx.state === "suspended" && actx.resume) actx.resume();
 
   var master = actx.createGain();
   master.gain.value = 0.22;
@@ -1468,6 +1484,12 @@ function togglePlay(){
   if (playing){ stopAudio(); return; }
   var n = state.hymn, url = tuneUrl(n);
   if (!url) return;
+
+  // Must happen inside the tap, before any waiting. See unlockAudio above.
+  if (!unlockAudio()){
+    toast("This browser cannot play the tune");
+    return;
+  }
   if (!/\.midi?$/i.test(url)){ playFile(url); return; }
   if (tuneCache[n]){ playTune(tuneCache[n]); return; }
   $("playLabel").textContent = "Loading";
@@ -1479,7 +1501,13 @@ function togglePlay(){
     playTune(tuneCache[n]);
   }).catch(function(){
     stopAudio();
-    toast("The tune for hymn " + n + " could not be played");
+    // Opened straight off the disk, a fetch is blocked before it starts, so
+    // say that rather than blaming the tune file.
+    if (location.protocol === "file:"){
+      toast("Tunes need the app to be served by a web address, not opened from a folder");
+    } else {
+      toast("The tune for hymn " + n + " could not be played");
+    }
   });
 }
 
