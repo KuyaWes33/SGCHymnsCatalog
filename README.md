@@ -79,9 +79,8 @@ verses through, so it runs about three minutes.
 ## Part three: putting it online
 
 The app is a folder of files. Any static host will serve it. These
-instructions use Netlify, which is what the live site runs on: it is free, it
-issues HTTPS certificates itself, and it republishes the site every time the
-repository changes.
+instructions use GitHub Pages because it is free, it supports HTTPS, and it
+takes a custom domain.
 
 HTTPS is not optional. Offline support does not work without it.
 
@@ -89,17 +88,9 @@ HTTPS is not optional. Offline support does not work without it.
 
 1. Create a **public repository** on GitHub.
 2. Copy everything in this folder into it, keeping the folder structure.
-3. Sign in to **netlify.com** with the GitHub account.
-4. Choose **Add new site**, then **Import an existing project**, and pick the
-   repository.
-5. Leave the build command empty and the publish directory as `.`. There is
-   nothing to build. `netlify.toml` in this folder already says so.
-6. Wait a minute, then open the address Netlify shows you.
-
-From then on, anything committed to the `main` branch is live in about a
-minute. Work on a branch and open a pull request and Netlify builds a
-separate preview address for it, which is the safe way to test a change on a
-real phone before the congregation sees it.
+3. In the repository, open **Settings**, then **Pages**, and set the source
+   to the **main** branch.
+4. Wait a minute, then open the address GitHub shows you.
 
 ### Getting the files in without the command line
 
@@ -112,19 +103,14 @@ it caps at 100 files per batch, and there are 761 tune files.
 
 ### A custom domain
 
-Add it under **Domain management** in the Netlify site settings, point the
-domain's DNS at Netlify using the records they show you, and the certificate
-is issued on its own. A `.org` reads right for a church.
-
-Settle this before telling the congregation. An installed app remembers the
-address it was installed from, so moving afterwards means everyone installs
-it again, and saved hymns and text size do not come with them.
+Add it under Settings then Pages, point the domain's DNS at GitHub using the
+records in their documentation, then tick **Enforce HTTPS** once the
+certificate is issued. A `.org` reads right for a church.
 
 ### Limits
 
-Netlify's free tier allows about 100 GB of traffic a month. This app is
-roughly 8 MB including every tune, and a phone stores it after the first
-visit rather than fetching it again, so a congregation is nowhere near.
+GitHub Pages allows a site of up to 1 GB and about 100 GB of traffic a month.
+This app is roughly 8 MB including every tune, so neither is close.
 
 ---
 
@@ -161,13 +147,6 @@ gave them. It sounds like a plain organ, which is what it is for.
 Notes are scheduled a few seconds ahead rather than all at once, so a long
 hymn does not stall an older phone when playback starts.
 
-An iPhone files sound made this way under the same heading as a notification
-chime, which the Ring/Silent switch mutes. That is why a tune would play on a
-computer and be silent on a phone. The app now asks for the heading music
-apps use, and keeps a silent clip running underneath the tune on older
-phones that have no way to be asked, so the switch no longer decides whether
-the congregation can hear the tune.
-
 **Choruses.** The source prints a chorus once, unlabelled, straight after
 verse one. Left alone, that makes the chorus look like verse two and pushes
 the real verse two to three. 85 hymns now show the chorus separately, under
@@ -197,6 +176,70 @@ add the hymn number to `CONFIRMED_BLOCK2` to separate its chorus, or to
 
 ---
 
+## Adding a hymn, or correcting one
+
+The 729 hymns from the printed book are built into `index.html`. Anything you
+add lives in a separate file, `extra-hymns.json`, so your additions are never
+lost when the app itself is rebuilt.
+
+An entry whose number is already in use **replaces** that hymn. So the same
+file both adds new hymns and corrects existing ones.
+
+### The easy way
+
+Open `editor.html` on the site, or from the folder on your computer. Fill in
+the number, paste the verses with a blank line between each, paste the chorus
+separately if there is one, and press Add. When you are done, press Download
+and put the file in the repository beside `index.html`.
+
+To change something later, open the editor, press **Load an existing file**,
+pick your current `extra-hymns.json`, edit, and download it again.
+
+### The file, if you prefer to type it
+
+```json
+[
+  {
+    "n": 731,
+    "t": "First line as it should appear in the list",
+    "tune": "Nettleton",
+    "meter": "8.7.8.7 Double",
+    "src": "Psalm 23",
+    "v": [
+      ["First line of verse one,", "second line of verse one."],
+      ["First line of verse two,", "second line of verse two."]
+    ],
+    "refrain": ["First line of the chorus,", "second line of the chorus."],
+    "note": "Shown under the tune name, for anything the printed text does not say."
+  }
+]
+```
+
+Only `n` and `v` are required. Leave `t` out and the first line of verse one
+is used. Leave `refrain` out for a hymn without a chorus. Enter the chorus
+once; the app repeats it after every verse and labels it, so it is never
+numbered as a verse.
+
+### It goes live on its own
+
+`extra-hymns.json` is the one file fetched fresh whenever there is a
+connection, so added hymns appear without bumping `VERSION` in `sw.js`. The
+last copy is kept on the phone for when there is no signal.
+
+If the file is missing or malformed the app ignores it and carries on with
+the 729 built-in hymns, so a typo can never leave the congregation without a
+hymnal.
+
+### Before you add anything
+
+Check who owns the words. The 1961 Trinity Hymnal texts are public domain,
+which is why they could be included here. Hymns written since then usually
+are not. If a hymn is still under copyright, you need permission from the
+copyright holder or a licence such as CCLI before putting it on a public web
+page. That responsibility sits with the church, not with the app.
+
+---
+
 ## Part seven: what is not included, and why
 
 **Hymn 27 is deliberately absent.** Unlike the rest of the 1961 edition,
@@ -222,9 +265,10 @@ mismatch is visible rather than quietly misleading.
 index.html              the app, including all 729 hymns
 manifest.webmanifest    makes it installable, sets the icon and launch screen
 sw.js                   offline support
-netlify.toml            host settings: security headers and how long files are kept
 icons/                  app icons, placeholders until the church logo arrives
 tunes/                  761 MIDI tunes from the OPC
+extra-hymns.json        hymns you have added or corrected
+editor.html             a form that builds extra-hymns.json for you
 chorus-check.txt        what was decided about each hymn's chorus
 README.md               this file
 ```
@@ -236,9 +280,8 @@ README.md               this file
 **The app does not install on an iPhone.** It has to be Safari. Chrome on
 iOS does not offer Add to Home Screen.
 
-**A correction is not showing up.** Reopen the app with a connection: the
-page is fetched fresh whenever there is one. If it still shows the old text,
-the phone has no signal and is reading its stored copy.
+**A correction is not showing up.** `VERSION` in `sw.js` was probably not
+bumped. Change it, commit, and reopen the app with a connection.
 
 **It does not work offline.** Check that the site is served over HTTPS and
 that it has been opened at least once with a connection.
@@ -246,10 +289,6 @@ that it has been opened at least once with a connection.
 **A tune will not play.** Confirm the file exists in `tunes/` with the name
 the app expects, `Th1_` plus the three digit hymn number, for example
 `Th1_087.mid`.
-
-**A tune is silent on a phone.** Check the volume first: the tune follows the
-media volume, so turn it up with the side buttons while the tune is playing,
-not before. On an iPhone, also check the Ring/Silent switch.
 
 **A hymn looks wrong.** Report the number. Nearly everything is a one line
 change in the data.
