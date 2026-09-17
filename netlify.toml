@@ -1,0 +1,57 @@
+# Netlify settings for the hymnal.
+#
+# There is nothing to build: the app is a folder of files that Netlify serves
+# as they are. Everything below is headers.
+
+[build]
+  publish = "."
+  command = ""
+
+# Sent with every file.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Stay on HTTPS for a year once a phone has seen the site. Offline support
+    # does not work without HTTPS, so there is nothing to lose by insisting.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # Do not let a browser second-guess the type of a file we served.
+    X-Content-Type-Options = "nosniff"
+    # Nobody needs to be told which hymn someone was reading.
+    Referrer-Policy = "no-referrer"
+    # The app has no business inside somebody else's frame.
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
+    # The app is one file that talks to nothing but itself, with two
+    # exceptions: the typefaces come from Google, and the silent clip that
+    # keeps the tune audible on an iPhone is a data: URI built in the page.
+    # Both are named here, so anything else injected into the page is refused.
+    Content-Security-Policy = """\
+default-src 'self'; \
+script-src 'self' 'unsafe-inline'; \
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
+font-src 'self' https://fonts.gstatic.com; \
+img-src 'self' data:; \
+media-src 'self' data:; \
+connect-src 'self'; \
+manifest-src 'self'; \
+worker-src 'self'; \
+object-src 'none'; \
+base-uri 'self'; \
+form-action 'none'; \
+frame-ancestors 'none'\
+"""
+
+# The service worker decides when everything else is refreshed, so it must
+# never be served from a stale copy itself.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Tune files never change once published, and there are 7 MB of them, so let a
+# phone keep one for good rather than ask again. If a tune is ever corrected,
+# give the file a new name.
+[[headers]]
+  for = "/tunes/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -4,10 +4,11 @@
  * opens with no signal at all. Tunes are large and rarely all wanted, so they
  * are cached only once someone has actually played them.
  *
- * When you change index.html, bump VERSION. Phones pick up the new version
- * the next time they are opened with a connection.
+ * The page is fetched fresh whenever there is a connection, so a change to
+ * index.html is live on the next open. Bump VERSION when the shell file list
+ * changes, to clear the old cache out.
  */
-const VERSION = "v2";
+const VERSION = "v3";
 const SHELL = `hymnal-shell-${VERSION}`;
 const TUNES = "hymnal-tunes";
 
@@ -64,6 +65,25 @@ self.addEventListener("fetch", (event) => {
         }
         return res;
       }))
+    );
+    return;
+  }
+
+  // The page itself: the network first, so a correction is in the hands of the
+  // congregation on the visit it is published rather than the one after. The
+  // cached copy is still there the moment there is no signal, which is all
+  // offline mode needs it for.
+  if (req.mode === "navigate" || url.pathname.endsWith("/") || /\.html$/i.test(url.pathname)) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(SHELL).then((c) => c.put(req, copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match(req).then((hit) => hit || caches.match("index.html")))
     );
     return;
   }

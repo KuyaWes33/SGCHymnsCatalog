@@ -79,8 +79,9 @@ verses through, so it runs about three minutes.
 ## Part three: putting it online
 
 The app is a folder of files. Any static host will serve it. These
-instructions use GitHub Pages because it is free, it supports HTTPS, and it
-takes a custom domain.
+instructions use Netlify, which is what the live site runs on: it is free, it
+issues HTTPS certificates itself, and it republishes the site every time the
+repository changes.
 
 HTTPS is not optional. Offline support does not work without it.
 
@@ -88,9 +89,17 @@ HTTPS is not optional. Offline support does not work without it.
 
 1. Create a **public repository** on GitHub.
 2. Copy everything in this folder into it, keeping the folder structure.
-3. In the repository, open **Settings**, then **Pages**, and set the source
-   to the **main** branch.
-4. Wait a minute, then open the address GitHub shows you.
+3. Sign in to **netlify.com** with the GitHub account.
+4. Choose **Add new site**, then **Import an existing project**, and pick the
+   repository.
+5. Leave the build command empty and the publish directory as `.`. There is
+   nothing to build. `netlify.toml` in this folder already says so.
+6. Wait a minute, then open the address Netlify shows you.
+
+From then on, anything committed to the `main` branch is live in about a
+minute. Work on a branch and open a pull request and Netlify builds a
+separate preview address for it, which is the safe way to test a change on a
+real phone before the congregation sees it.
 
 ### Getting the files in without the command line
 
@@ -103,14 +112,19 @@ it caps at 100 files per batch, and there are 761 tune files.
 
 ### A custom domain
 
-Add it under Settings then Pages, point the domain's DNS at GitHub using the
-records in their documentation, then tick **Enforce HTTPS** once the
-certificate is issued. A `.org` reads right for a church.
+Add it under **Domain management** in the Netlify site settings, point the
+domain's DNS at Netlify using the records they show you, and the certificate
+is issued on its own. A `.org` reads right for a church.
+
+Settle this before telling the congregation. An installed app remembers the
+address it was installed from, so moving afterwards means everyone installs
+it again, and saved hymns and text size do not come with them.
 
 ### Limits
 
-GitHub Pages allows a site of up to 1 GB and about 100 GB of traffic a month.
-This app is roughly 8 MB including every tune, so neither is close.
+Netlify's free tier allows about 100 GB of traffic a month. This app is
+roughly 8 MB including every tune, and a phone stores it after the first
+visit rather than fetching it again, so a congregation is nowhere near.
 
 ---
 
@@ -146,6 +160,13 @@ gave them. It sounds like a plain organ, which is what it is for.
 
 Notes are scheduled a few seconds ahead rather than all at once, so a long
 hymn does not stall an older phone when playback starts.
+
+An iPhone files sound made this way under the same heading as a notification
+chime, which the Ring/Silent switch mutes. That is why a tune would play on a
+computer and be silent on a phone. The app now asks for the heading music
+apps use, and keeps a silent clip running underneath the tune on older
+phones that have no way to be asked, so the switch no longer decides whether
+the congregation can hear the tune.
 
 **Choruses.** The source prints a chorus once, unlabelled, straight after
 verse one. Left alone, that makes the chorus look like verse two and pushes
@@ -201,6 +222,7 @@ mismatch is visible rather than quietly misleading.
 index.html              the app, including all 729 hymns
 manifest.webmanifest    makes it installable, sets the icon and launch screen
 sw.js                   offline support
+netlify.toml            host settings: security headers and how long files are kept
 icons/                  app icons, placeholders until the church logo arrives
 tunes/                  761 MIDI tunes from the OPC
 chorus-check.txt        what was decided about each hymn's chorus
@@ -214,8 +236,9 @@ README.md               this file
 **The app does not install on an iPhone.** It has to be Safari. Chrome on
 iOS does not offer Add to Home Screen.
 
-**A correction is not showing up.** `VERSION` in `sw.js` was probably not
-bumped. Change it, commit, and reopen the app with a connection.
+**A correction is not showing up.** Reopen the app with a connection: the
+page is fetched fresh whenever there is one. If it still shows the old text,
+the phone has no signal and is reading its stored copy.
 
 **It does not work offline.** Check that the site is served over HTTPS and
 that it has been opened at least once with a connection.
@@ -223,6 +246,10 @@ that it has been opened at least once with a connection.
 **A tune will not play.** Confirm the file exists in `tunes/` with the name
 the app expects, `Th1_` plus the three digit hymn number, for example
 `Th1_087.mid`.
+
+**A tune is silent on a phone.** Check the volume first: the tune follows the
+media volume, so turn it up with the side buttons while the tune is playing,
+not before. On an iPhone, also check the Ring/Silent switch.
 
 **A hymn looks wrong.** Report the number. Nearly everything is a one line
 change in the data.
