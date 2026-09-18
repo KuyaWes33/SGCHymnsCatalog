@@ -7,7 +7,7 @@
  * When you change index.html, bump VERSION. Phones pick up the new version
  * the next time they are opened with a connection.
  */
-const VERSION = "v3";
+const VERSION = "v4";
 const SHELL = `hymnal-shell-${VERSION}`;
 const TUNES = "hymnal-tunes";
 
