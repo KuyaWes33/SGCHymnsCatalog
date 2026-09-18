@@ -1390,7 +1390,9 @@ function parseMidi(buffer){
 }
 
 var actx = null, playing = null, tuneCache = {}, element = null;
+var sessionClip = null, loadingFor = null;
 function stopAudio(){
+  loadingFor = null;
   if (element){ try { element.pause(); element.currentTime = 0; } catch(e){} }
   if (playing){
     if (playing.gain){
@@ -1400,6 +1402,7 @@ function stopAudio(){
     clearTimeout(playing.timer);
     playing = null;
   }
+  releaseMediaSession();
   var b = $("playBtn");
   if (b) b.setAttribute("aria-pressed", "false");
   if ($("playLabel")) $("playLabel").textContent = (CONFIG.audio && CONFIG.audio.label) || "Play the tune";
@@ -1414,6 +1417,63 @@ function setupAudio(h){
    scheduled a few seconds ahead rather than all at once. That keeps an older
    phone from stalling when playback starts. */
 var LOOKAHEAD = 4, TICK = 1000;
+
+/* A second of silence, built here rather than shipped as a file, so offline
+   mode has nothing extra to cache. See holdMediaSession below for what it is
+   for. */
+function silentClip(){
+  var rate = 8000, n = rate, buf = new ArrayBuffer(44 + n), view = new DataView(buf), i;
+  function tag(p, s){ for (var k = 0; k < s.length; k++) view.setUint8(p + k, s.charCodeAt(k)); }
+  tag(0, "RIFF"); view.setUint32(4, 36 + n, true); tag(8, "WAVEfmt ");
+  view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+  view.setUint32(24, rate, true); view.setUint32(28, rate, true);
+  view.setUint16(32, 1, true); view.setUint16(34, 8, true);
+  tag(36, "data"); view.setUint32(40, n, true);
+  for (i = 0; i < n; i++) view.setUint8(44 + i, 128);
+  // A data: URI rather than a blob: one, because the phones that need the
+  // clip most are the older ones, and those are the ones whose audio element
+  // is fussy about blobs.
+  var bin = "";
+  for (i = 0; i < buf.byteLength; i++) bin += String.fromCharCode(view.getUint8(i));
+  return "data:audio/wav;base64," + btoa(bin);
+}
+/* An iPhone sorts sound into categories. A page that has only ever used the
+   Web Audio API gets the "ambient" one, which the Ring/Silent switch mutes
+   and the ringer volume controls. A tune synthesised here is therefore
+   inaudible on any phone with the switch flicked across, with no error and
+   nothing in the console: the notes are made, they are just thrown away.
+   That is the whole of the bug where the tune plays on a computer and never
+   on a phone.
+   A page that is playing an audio element is given the media category
+   instead, the one music apps use, which ignores the switch and follows the
+   media volume. So a silent clip is kept running underneath the tune for no
+   reason other than to hold that category open. Safari 16.4 and later can
+   simply be told, and are.
+   Note that this is why the engine running is not the same question as the
+   phone being audible: with the switch across, the engine runs perfectly and
+   is simply routed somewhere nobody can hear. Nothing the page can read
+   tells it that, which is why this is fixed rather than detected. */
+function holdMediaSession(){
+  try {
+    if (navigator.audioSession) navigator.audioSession.type = "playback";
+  } catch (e) {}
+  try {
+    if (!sessionClip){
+      sessionClip = new Audio(silentClip());
+      sessionClip.loop = true;
+      sessionClip.setAttribute("playsinline", "");
+    }
+    var p = sessionClip.play();
+    if (p && p.catch) p.catch(function(){});
+  } catch (e) {}
+}
+/* Let the clip go once nothing needs it, so the phone is not left holding a
+   media session for an app that has gone quiet. A tune still playing always
+   wins: the sound check must never pull the session out from under it. */
+function releaseMediaSession(){
+  if (playing) return;
+  if (sessionClip){ try { sessionClip.pause(); } catch(e){} }
+}
 /* iPhones only let audio start inside the tap that asked for it. The tune has
    to be fetched first, and by the time that returns the tap is long over, so
    the audio engine is started here, synchronously, before anything is
@@ -1422,7 +1482,10 @@ function unlockAudio(){
   var Ctx = window.AudioContext || window.webkitAudioContext;
   if (!Ctx) return null;
   if (!actx) actx = new Ctx();
-  if (actx.state === "suspended" && actx.resume) actx.resume();
+  holdMediaSession();
+  if (actx.state !== "running" && actx.resume){
+    try { var p = actx.resume(); if (p && p.catch) p.catch(function(){}); } catch (e) {}
+  }
   try {
     var o = actx.createOscillator(), g = actx.createGain();
     g.gain.value = 0;
@@ -1431,10 +1494,29 @@ function unlockAudio(){
   } catch (e) {}
   return actx;
 }
+/* resume() finishes in its own time, and a tune has to be fetched before it
+   can be played, so the engine is often still starting when the notes are
+   ready. A suspended engine has a frozen clock, so notes scheduled against it
+   land in the past and are dropped: silence, and a button that says Stop.
+   Wait for it to be genuinely running, and give up out loud if it never is.
+   Asking the state the instant the tap returns is no good: resume() has not
+   finished yet, so on a phone the answer is always "suspended" and any
+   warning built on it cries wolf every time. */
+function whenRunning(){
+  return new Promise(function(resolve, reject){
+    var tries = 0;
+    (function check(){
+      if (!actx) return reject();
+      if (actx.state === "running") return resolve();
+      if (++tries > 20) return reject();
+      if (actx.resume){ try { actx.resume(); } catch (e) {} }
+      setTimeout(check, 50);
+    })();
+  });
+}
 
 function playTune(tune){
   if (!actx){ toast("This browser cannot play the tune"); return; }
-  if (actx.state === "suspended" && actx.resume) actx.resume();
 
   var master = actx.createGain();
   master.gain.value = 0.22;
@@ -1447,11 +1529,17 @@ function playTune(tune){
     var until = actx.currentTime - t0 + LOOKAHEAD;
     while (i < tune.notes.length && tune.notes[i].start <= until){
       var n = tune.notes[i++];
+      var s = t0 + n.start, e = s + n.dur;
+      /* A phone that was locked or switched away throttles this timer to a
+         tick a minute, so the tune can come back with a minute of notes
+         already due. Starting them now would fire them all at once, so the
+         missed ones are let go and the tune picks up where the clock is. */
+      if (s < actx.currentTime) s = actx.currentTime;
+      if (e - s < 0.05) continue;
       var osc = actx.createOscillator(), g = actx.createGain();
       osc.type = "triangle";
       osc.frequency.value = 440 * Math.pow(2, (n.note - 69) / 12);
       var level = 0.10 + (n.vel / 127) * 0.16;
-      var s = t0 + n.start, e = s + n.dur;
       g.gain.setValueAtTime(0, s);
       g.gain.linearRampToValueAtTime(level, s + 0.02);
       g.gain.setValueAtTime(level, Math.max(s + 0.03, e - 0.06));
@@ -1471,10 +1559,20 @@ function playTune(tune){
   $("playLabel").textContent = "Stop";
   schedule();
 }
+/* Coming back to the app after a call or a locked screen leaves the engine
+   suspended, which would leave the tune stopped dead with the button still
+   offering to stop it. */
+document.addEventListener("visibilitychange", function(){
+  if (document.hidden || !playing || !actx) return;
+  if (actx.state !== "running" && actx.resume){
+    try { actx.resume(); } catch (e) {}
+  }
+  if (sessionClip){ var p = sessionClip.play(); if (p && p.catch) p.catch(function(){}); }
+});
 /* Ready-made audio files play straight through an audio element; MIDI is read
    and synthesised above. Either kind of file works, decided by its name. */
 function playFile(url){
-  if (!element) element = new Audio();
+  if (!element){ element = new Audio(); element.setAttribute("playsinline", ""); }
   element.src = url;
   element.onended = stopAudio;
   element.onerror = function(){ stopAudio(); toast("That tune could not be played"); };
@@ -1491,24 +1589,40 @@ function togglePlay(){
   if (playing){ stopAudio(); return; }
   var n = state.hymn, url = tuneUrl(n);
   if (!url) return;
+  // A second tap while the tune is still being fetched means stop, not start
+  // again: without this a slow signal stacks up fetches and then plays them
+  // over one another.
+  if (loadingFor !== null){ stopAudio(); return; }
 
   // Must happen inside the tap, before any waiting. See unlockAudio above.
   if (!unlockAudio()){
     toast("This browser cannot play the tune");
     return;
   }
-  if (actx.state !== "running"){
-    toast("Sound is blocked. Check the silent switch and the volume.");
-  }
   if (!/\.midi?$/i.test(url)){ playFile(url); return; }
-  if (tuneCache[n]){ playTune(tuneCache[n]); return; }
+
+  function start(tune){
+    if (loadingFor !== n) return;
+    whenRunning().then(function(){
+      if (loadingFor !== n) return;
+      loadingFor = null;
+      playTune(tune);
+    }, function(){
+      stopAudio();
+      toast("Sound is blocked on this phone. Tap play once more.");
+    });
+  }
+
+  loadingFor = n;
   $("playLabel").textContent = "Loading";
+  if (tuneCache[n]){ start(tuneCache[n]); return; }
   fetch(url).then(function(r){
     if (!r.ok) throw new Error("missing");
     return r.arrayBuffer();
   }).then(function(buf){
+    if (loadingFor !== n) return;
     tuneCache[n] = parseMidi(buf);
-    playTune(tuneCache[n]);
+    start(tuneCache[n]);
   }).catch(function(){
     stopAudio();
     // Opened straight off the disk, a fetch is blocked before it starts, so
@@ -1522,26 +1636,31 @@ function togglePlay(){
 }
 
 /* ---------- clear saved ---------- */
-/* One clear note, started inside the tap. If this is silent but the phone can
-   play other sound, the silent switch or the volume is the culprit, not the
-   app. If it sounds but a hymn does not, the problem is loading the tune. */
+/* One clear note, started inside the tap and sent down the same path a tune
+   takes, so that hearing it means a tune will be heard too. If this is silent
+   but the phone can play other sound, the volume is the culprit, not the app.
+   If it sounds but a hymn does not, the problem is loading the tune. */
 $("soundCheck").addEventListener("click", function(){
   if (!unlockAudio()){ toast("This browser cannot make sound"); return; }
-  if (actx.state !== "running"){
-    toast("Sound is blocked. Check the silent switch and the volume.");
-    return;
-  }
-  var osc = actx.createOscillator(), g = actx.createGain();
-  osc.type = "triangle";
-  osc.frequency.value = 440;
-  var t = actx.currentTime;
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.25, t + 0.03);
-  g.gain.setValueAtTime(0.25, t + 0.7);
-  g.gain.linearRampToValueAtTime(0, t + 0.9);
-  osc.connect(g); g.connect(actx.destination);
-  osc.start(t); osc.stop(t + 0.95);
   toast("Playing one note now");
+  whenRunning().then(function(){
+    var osc = actx.createOscillator(), g = actx.createGain();
+    osc.type = "triangle";
+    osc.frequency.value = 440;
+    var t = actx.currentTime;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.25, t + 0.03);
+    g.gain.setValueAtTime(0.25, t + 0.7);
+    g.gain.linearRampToValueAtTime(0, t + 0.9);
+    osc.connect(g); g.connect(actx.destination);
+    osc.start(t); osc.stop(t + 0.95);
+    // Hand the media session back once the note is over, unless a tune has
+    // started in the meantime and is still using it.
+    setTimeout(releaseMediaSession, 1200);
+  }, function(){
+    releaseMediaSession();
+    toast("Sound is blocked on this phone. Tap Test once more.");
+  });
 });
 
 $("clearSaved").addEventListener("click", function(){
