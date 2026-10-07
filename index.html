@@ -2,27 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="The Trinity Hymnal, 1961 edition, for the congregation.">
-<meta name="theme-color" content="#F8F9FA" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0F1317" media="(prefers-color-scheme: dark)">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<style>
-:root{
-  color-scheme: light dark;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-html,body{height:100%}
-body{margin:0;font:14px system-ui,sans-serif;background:#F8F9FA}
-img{max-width:100%}
-[hidden]{display:none!important}
-</style>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Trinity Hymnal Companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -458,11 +438,98 @@ button{font:inherit;color:inherit}
 }
 .toast[hidden]{display:none !important}
 
+/* ---------- number box: one size, empty or filled ---------- */
+.readout{height:146px;overflow:hidden}
+.readout-num{height:54px;min-height:0;white-space:nowrap;overflow:hidden}
+.readout-title{
+  height:49px;min-height:0;overflow:hidden;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+}
+
+/* ---------- notes (printed page) view ---------- */
+.tool-notes{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.tool-notes:hover{background:var(--accent);filter:brightness(1.08)}
+.tool-notes[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.hymn-body{transition:opacity .18s ease}
+.hymn-body.is-switching{opacity:0}
+.scan-pages{display:grid;gap:12px;margin-inline:-16px}
+.scan-pages img{display:block;width:100%;height:auto;background:#FFFFFF}
+.scan-pages .scan-slot{margin-inline:16px}
+
+/* ----------------------------------------------------------
+   DESKTOP LAYOUT
+   The rule Wes set: landscape means a desktop browser, portrait
+   means a phone. The width floor is only there so that a phone
+   keyboard sliding up (which makes the visible area wider than
+   it is tall) does not flip the layout in the middle of typing.
+   ---------------------------------------------------------- */
+@media (orientation:landscape) and (min-width:700px){
+  .app{
+    max-width:none;border:0;
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr);
+    grid-template-rows:auto minmax(0,1fr);
+  }
+  .topbar{grid-column:1 / -1;grid-row:1;padding-inline:24px}
+  .nav{
+    grid-column:1;grid-row:2;
+    display:flex;flex-direction:column;
+    width:116px;overflow-y:auto;
+    border-top:0;border-right:1px solid var(--rule);
+    padding-bottom:0;
+  }
+  .nav button{
+    flex:0 1 78px;min-height:46px;font-size:12.5px;
+    border-top:0;border-left:3px solid transparent;
+  }
+  .nav button[aria-current="page"]{border-left-color:var(--accent)}
+  .screens{grid-column:2;grid-row:2}
+  .screen{max-width:780px;margin:0 auto;padding:28px 32px 40px}
+  #s-hymn,#s-number{max-width:1080px}
+
+  /* home */
+  .quicklinks{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .home-main{grid-column:1 / -1}
+
+  /* number: the box on the left, the keys on the right */
+  #s-number:not([hidden]){
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(280px,400px);
+    column-gap:32px;align-items:start;
+  }
+  #s-number .eyebrow{grid-column:1 / -1}
+  #s-number .readout{margin-bottom:0}
+
+  /* hymn */
+  .hymn-title{font-size:32px}
+  .scan-pages{margin-inline:0;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));justify-items:center}
+  .scan-pages img{max-width:860px;border:1px solid var(--rule);border-radius:4px}
+  .scan-pages .scan-slot{margin-inline:0;width:100%}
+  .pager{max-width:520px}
+  .toast{bottom:28px}
+}
+@media (orientation:landscape) and (min-width:1000px){
+  #lyricsWrap{columns:2;column-gap:56px}
+  #lyricsWrap .verse,#lyricsWrap .refrain,#lyricsWrap .amen{break-inside:avoid}
+}
+/* a phone turned on its side: same desktop layout, tightened to fit the height */
+@media (orientation:landscape) and (min-width:700px) and (max-height:540px){
+  .topbar{min-height:50px;padding-block:2px}
+  .screen{padding:14px 24px 20px}
+  .key{min-height:46px}
+  .key:not(.key-word){font-size:24px}
+  .pad{gap:8px}
+  .nav button svg{width:18px;height:18px}
+}
+
 @media (prefers-reduced-motion: reduce){
   *{animation:none !important;transition:none !important}
 }
 </style>
 
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
 <div class="app">
 
   <header class="topbar">
@@ -619,15 +686,16 @@ button{font:inherit;color:inherit}
         <p class="sing-note" id="hNote" hidden></p>
       </div>
 
-      <div class="tools" id="viewToggle" hidden>
-        <div class="seg" style="flex:1 1 180px;min-width:180px;margin:0">
-          <button type="button" id="viewText" aria-pressed="true">Lyrics</button>
-          <button type="button" id="viewScan" aria-pressed="false">Music page</button>
-        </div>
-      </div>
-
       <div class="tools" style="border-bottom:0;padding-top:0;margin-bottom:10px">
-        <div class="size-group" role="group" aria-label="Text size">
+        <button class="tool tool-notes" type="button" id="notesBtn" aria-pressed="false" hidden>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <g stroke="currentColor" stroke-width="1.1"><line x1="1" y1="4" x2="15" y2="4"/><line x1="1" y1="7" x2="15" y2="7"/><line x1="1" y1="10" x2="15" y2="10"/><line x1="1" y1="13" x2="15" y2="13"/></g>
+            <circle cx="6" cy="11.4" r="2.1" fill="currentColor"/>
+            <line x1="8" y1="11.4" x2="8" y2="2.6" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span id="notesLabel">Show notes</span>
+        </button>
+        <div class="size-group" id="sizeGroup" role="group" aria-label="Text size">
           <button type="button" id="sizeDown" class="size-sm" aria-label="Smaller text">A</button>
           <button type="button" id="sizeUp" class="size-lg" aria-label="Larger text">A</button>
         </div>
@@ -657,13 +725,10 @@ button{font:inherit;color:inherit}
         </button>
       </div>
 
-      <div id="lyricsWrap"></div>
-
-      <div id="scanWrap" hidden>
-        <img id="scanImg" alt="The printed page for this hymn" style="width:100%;border:1px solid var(--rule);border-radius:4px">
-        <div class="scan-slot" id="scanMissing" hidden>
-          <p><strong>This page has not been added yet.</strong></p>
-          <span class="path" id="scanPath"></span>
+      <div class="hymn-body" id="hymnBody">
+        <div id="lyricsWrap"></div>
+        <div id="scanWrap" hidden>
+          <div class="scan-pages" id="scanPages"></div>
         </div>
       </div>
 
@@ -892,15 +957,37 @@ var CONFIG = {
   // Leave base empty and the Play button stays hidden everywhere.
   audio: {
     base: "tunes",
-    pattern: "Th1_{n}.mid",
-    have: "all",
+    pattern: "{n}.ogg",
+    have: [1, 26, 32, 35, 77, 80, 81, 86, 87, 133, 141, 149, 152, 161, 168, 178, 186, 216, 218, 269, 270, 402, 421, 431, 460, 500, 501, 533, 582, 700],
     label: "Play the tune"
   },
 
-  // Scanned pages from the printed hymnal. Until base is set, the whole
-  // Lyrics / Music page switch stays hidden, so nobody meets a dead end.
-  // Settle the copyright question with the publisher before filling this in.
-  scans: { base: "", pattern: "{n}.webp" }
+  // Notes: the scanned pages of the printed hymnal, as WebP files.
+  //
+  //   base    the folder in the repository holding the page images
+  //   pattern the file name, where {n} becomes the hymn number padded to
+  //           three digits, so hymn 7 is scans/007.webp
+  //   have    which hymn numbers have a page uploaded, so the Show notes
+  //           button only appears where it will work. Use the string "all"
+  //           once the whole folder is in place.
+  //   pages   the exceptions. A hymn listed here ignores the pattern and
+  //           shows exactly the files named, in order. Use it for a hymn
+  //           that runs over two images, or for two hymns that share one:
+  //
+  //             pages: { 27: ["027a.webp", "027b.webp"],
+  //                      45: ["044.webp"] }
+  //
+  //           A hymn listed in pages does not also need to be in have.
+  //
+  // With have empty and pages empty the button stays hidden everywhere.
+  scans: {
+    base: "scans",
+    pattern: "{n}.webp",
+    have: [],
+    pages: {},
+    showLabel: "Show notes",
+    hideLabel: "Show lyrics"
+  }
 };
 
 /* ----------------------------------------------------------
@@ -1133,7 +1220,6 @@ function openHymn(n){
   var h = BY_NUM[n];
   if (!h) return;
   state.hymn = n;
-  state.view = "text";
   state.last = n;
   store.set("thc.last", n);
 
@@ -1170,7 +1256,7 @@ function openHymn(n){
   if (h.amen) html += '<div class="amen" style="margin-left:36px">Amen.</div>';
   $("lyricsWrap").innerHTML = html;
 
-  setView("text");
+  setView("text", true);
   updateSaveBtn();
   updatePager();
   updateRecent();
@@ -1178,32 +1264,71 @@ function openHymn(n){
   show("hymn");
 }
 
-function scanUrl(n){
+/* Which page images belong to a hymn. Returns a list, or null for none. */
+function scanUrls(n){
   var s = CONFIG.scans;
   if (!s || !s.base) return null;
-  return s.base.replace(/\/+$/, "") + "/" +
-         (s.pattern || "{n}.webp").replace("{n}", String(n).padStart(3, "0"));
+  var base = s.base.replace(/\/+$/, "") + "/";
+  var listed = s.pages && s.pages[n];
+  if (listed){
+    if (!Array.isArray(listed)) listed = [listed];
+    return listed.length ? listed.map(function(f){ return base + f; }) : null;
+  }
+  var have = s.have === "all" || (Array.isArray(s.have) && s.have.indexOf(n) > -1);
+  if (!have) return null;
+  return [base + (s.pattern || "{n}.webp").replace("{n}", String(n).padStart(3, "0"))];
 }
+/* The images are only fetched when somebody asks for the notes, so opening a
+   hymn for its words costs no extra data. */
+var scanLoadedFor = null;
 function setupScan(h){
-  var url = scanUrl(h.n);
-  $("viewToggle").hidden = !url;
-  $("scanPath").textContent = url || "";
-  var img = $("scanImg"), miss = $("scanMissing");
-  img.hidden = true; miss.hidden = true;
-  if (!url) return;
-  img.onload = function(){ img.hidden = false; miss.hidden = true; };
-  img.onerror = function(){ img.hidden = true; miss.hidden = false; };
-  img.src = url;
+  $("notesBtn").hidden = !scanUrls(h.n);
+  $("scanPages").innerHTML = "";
+  scanLoadedFor = null;
 }
-function setView(v){
+function loadScan(){
+  if (scanLoadedFor === state.hymn) return;
+  scanLoadedFor = state.hymn;
+  var wrap = $("scanPages"), urls = scanUrls(state.hymn) || [];
+  wrap.innerHTML = "";
+  urls.forEach(function(url, i){
+    var img = new Image();
+    img.alt = "Printed page for hymn " + state.hymn + (urls.length > 1 ? ", part " + (i+1) + " of " + urls.length : "");
+    img.onerror = function(){
+      var miss = document.createElement("div");
+      miss.className = "scan-slot";
+      miss.innerHTML = "<p><strong>This page could not be loaded.</strong></p>" +
+        "<p>Check the connection, or go back to the lyrics.</p>" +
+        '<span class="path">' + escapeHtml(url) + "</span>";
+      if (img.parentNode) img.parentNode.replaceChild(miss, img);
+    };
+    img.src = url;
+    wrap.appendChild(img);
+  });
+}
+var viewTimer;
+function setView(v, instant){
+  var body = $("hymnBody"), changed = (state.view !== v);
   state.view = v;
-  $("lyricsWrap").hidden = (v !== "text");
-  $("scanWrap").hidden = (v !== "scan");
-  $("viewText").setAttribute("aria-pressed", v === "text" ? "true":"false");
-  $("viewScan").setAttribute("aria-pressed", v === "scan" ? "true":"false");
+  function apply(){
+    if (v === "scan") loadScan();
+    $("lyricsWrap").hidden = (v !== "text");
+    $("scanWrap").hidden = (v !== "scan");
+    $("sizeGroup").hidden = (v === "scan");
+    $("notesBtn").setAttribute("aria-pressed", v === "scan" ? "true" : "false");
+    $("notesLabel").textContent = v === "scan"
+      ? (CONFIG.scans.hideLabel || "Show lyrics")
+      : (CONFIG.scans.showLabel || "Show notes");
+    body.classList.remove("is-switching");
+  }
+  clearTimeout(viewTimer);
+  if (instant || !changed){ apply(); return; }
+  body.classList.add("is-switching");
+  viewTimer = setTimeout(apply, 190);
 }
-$("viewText").addEventListener("click", function(){ setView("text"); });
-$("viewScan").addEventListener("click", function(){ setView("scan"); });
+$("notesBtn").addEventListener("click", function(){
+  setView(state.view === "scan" ? "text" : "scan");
+});
 
 function updateSaveBtn(){
   var on = state.saved.indexOf(state.hymn) > -1;
@@ -1390,9 +1515,7 @@ function parseMidi(buffer){
 }
 
 var actx = null, playing = null, tuneCache = {}, element = null;
-var sessionClip = null, loadingFor = null;
 function stopAudio(){
-  loadingFor = null;
   if (element){ try { element.pause(); element.currentTime = 0; } catch(e){} }
   if (playing){
     if (playing.gain){
@@ -1402,7 +1525,6 @@ function stopAudio(){
     clearTimeout(playing.timer);
     playing = null;
   }
-  releaseMediaSession();
   var b = $("playBtn");
   if (b) b.setAttribute("aria-pressed", "false");
   if ($("playLabel")) $("playLabel").textContent = (CONFIG.audio && CONFIG.audio.label) || "Play the tune";
@@ -1417,63 +1539,6 @@ function setupAudio(h){
    scheduled a few seconds ahead rather than all at once. That keeps an older
    phone from stalling when playback starts. */
 var LOOKAHEAD = 4, TICK = 1000;
-
-/* A second of silence, built here rather than shipped as a file, so offline
-   mode has nothing extra to cache. See holdMediaSession below for what it is
-   for. */
-function silentClip(){
-  var rate = 8000, n = rate, buf = new ArrayBuffer(44 + n), view = new DataView(buf), i;
-  function tag(p, s){ for (var k = 0; k < s.length; k++) view.setUint8(p + k, s.charCodeAt(k)); }
-  tag(0, "RIFF"); view.setUint32(4, 36 + n, true); tag(8, "WAVEfmt ");
-  view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
-  view.setUint32(24, rate, true); view.setUint32(28, rate, true);
-  view.setUint16(32, 1, true); view.setUint16(34, 8, true);
-  tag(36, "data"); view.setUint32(40, n, true);
-  for (i = 0; i < n; i++) view.setUint8(44 + i, 128);
-  // A data: URI rather than a blob: one, because the phones that need the
-  // clip most are the older ones, and those are the ones whose audio element
-  // is fussy about blobs.
-  var bin = "";
-  for (i = 0; i < buf.byteLength; i++) bin += String.fromCharCode(view.getUint8(i));
-  return "data:audio/wav;base64," + btoa(bin);
-}
-/* An iPhone sorts sound into categories. A page that has only ever used the
-   Web Audio API gets the "ambient" one, which the Ring/Silent switch mutes
-   and the ringer volume controls. A tune synthesised here is therefore
-   inaudible on any phone with the switch flicked across, with no error and
-   nothing in the console: the notes are made, they are just thrown away.
-   That is the whole of the bug where the tune plays on a computer and never
-   on a phone.
-   A page that is playing an audio element is given the media category
-   instead, the one music apps use, which ignores the switch and follows the
-   media volume. So a silent clip is kept running underneath the tune for no
-   reason other than to hold that category open. Safari 16.4 and later can
-   simply be told, and are.
-   Note that this is why the engine running is not the same question as the
-   phone being audible: with the switch across, the engine runs perfectly and
-   is simply routed somewhere nobody can hear. Nothing the page can read
-   tells it that, which is why this is fixed rather than detected. */
-function holdMediaSession(){
-  try {
-    if (navigator.audioSession) navigator.audioSession.type = "playback";
-  } catch (e) {}
-  try {
-    if (!sessionClip){
-      sessionClip = new Audio(silentClip());
-      sessionClip.loop = true;
-      sessionClip.setAttribute("playsinline", "");
-    }
-    var p = sessionClip.play();
-    if (p && p.catch) p.catch(function(){});
-  } catch (e) {}
-}
-/* Let the clip go once nothing needs it, so the phone is not left holding a
-   media session for an app that has gone quiet. A tune still playing always
-   wins: the sound check must never pull the session out from under it. */
-function releaseMediaSession(){
-  if (playing) return;
-  if (sessionClip){ try { sessionClip.pause(); } catch(e){} }
-}
 /* iPhones only let audio start inside the tap that asked for it. The tune has
    to be fetched first, and by the time that returns the tap is long over, so
    the audio engine is started here, synchronously, before anything is
@@ -1481,11 +1546,19 @@ function releaseMediaSession(){
 function unlockAudio(){
   var Ctx = window.AudioContext || window.webkitAudioContext;
   if (!Ctx) return null;
+
+  /* An iPhone's silent switch governs a category the browser assigns to the
+     page's sound. The default category is the one the switch mutes, because
+     a browser cannot tell a hymn somebody asked for from an advert that
+     started itself. Declaring "playback", the category meant for music and
+     video, puts the tune in the class the switch leaves alone. Ignored by
+     browsers that do not have this, which simply behave as before. */
+  try {
+    if (navigator.audioSession) navigator.audioSession.type = "playback";
+  } catch (e) {}
+
   if (!actx) actx = new Ctx();
-  holdMediaSession();
-  if (actx.state !== "running" && actx.resume){
-    try { var p = actx.resume(); if (p && p.catch) p.catch(function(){}); } catch (e) {}
-  }
+  if (actx.state === "suspended" && actx.resume) actx.resume();
   try {
     var o = actx.createOscillator(), g = actx.createGain();
     g.gain.value = 0;
@@ -1494,29 +1567,10 @@ function unlockAudio(){
   } catch (e) {}
   return actx;
 }
-/* resume() finishes in its own time, and a tune has to be fetched before it
-   can be played, so the engine is often still starting when the notes are
-   ready. A suspended engine has a frozen clock, so notes scheduled against it
-   land in the past and are dropped: silence, and a button that says Stop.
-   Wait for it to be genuinely running, and give up out loud if it never is.
-   Asking the state the instant the tap returns is no good: resume() has not
-   finished yet, so on a phone the answer is always "suspended" and any
-   warning built on it cries wolf every time. */
-function whenRunning(){
-  return new Promise(function(resolve, reject){
-    var tries = 0;
-    (function check(){
-      if (!actx) return reject();
-      if (actx.state === "running") return resolve();
-      if (++tries > 20) return reject();
-      if (actx.resume){ try { actx.resume(); } catch (e) {} }
-      setTimeout(check, 50);
-    })();
-  });
-}
 
 function playTune(tune){
   if (!actx){ toast("This browser cannot play the tune"); return; }
+  if (actx.state === "suspended" && actx.resume) actx.resume();
 
   var master = actx.createGain();
   master.gain.value = 0.22;
@@ -1529,17 +1583,11 @@ function playTune(tune){
     var until = actx.currentTime - t0 + LOOKAHEAD;
     while (i < tune.notes.length && tune.notes[i].start <= until){
       var n = tune.notes[i++];
-      var s = t0 + n.start, e = s + n.dur;
-      /* A phone that was locked or switched away throttles this timer to a
-         tick a minute, so the tune can come back with a minute of notes
-         already due. Starting them now would fire them all at once, so the
-         missed ones are let go and the tune picks up where the clock is. */
-      if (s < actx.currentTime) s = actx.currentTime;
-      if (e - s < 0.05) continue;
       var osc = actx.createOscillator(), g = actx.createGain();
       osc.type = "triangle";
       osc.frequency.value = 440 * Math.pow(2, (n.note - 69) / 12);
       var level = 0.10 + (n.vel / 127) * 0.16;
+      var s = t0 + n.start, e = s + n.dur;
       g.gain.setValueAtTime(0, s);
       g.gain.linearRampToValueAtTime(level, s + 0.02);
       g.gain.setValueAtTime(level, Math.max(s + 0.03, e - 0.06));
@@ -1559,20 +1607,10 @@ function playTune(tune){
   $("playLabel").textContent = "Stop";
   schedule();
 }
-/* Coming back to the app after a call or a locked screen leaves the engine
-   suspended, which would leave the tune stopped dead with the button still
-   offering to stop it. */
-document.addEventListener("visibilitychange", function(){
-  if (document.hidden || !playing || !actx) return;
-  if (actx.state !== "running" && actx.resume){
-    try { actx.resume(); } catch (e) {}
-  }
-  if (sessionClip){ var p = sessionClip.play(); if (p && p.catch) p.catch(function(){}); }
-});
 /* Ready-made audio files play straight through an audio element; MIDI is read
    and synthesised above. Either kind of file works, decided by its name. */
 function playFile(url){
-  if (!element){ element = new Audio(); element.setAttribute("playsinline", ""); }
+  if (!element) element = new Audio();
   element.src = url;
   element.onended = stopAudio;
   element.onerror = function(){ stopAudio(); toast("That tune could not be played"); };
@@ -1589,40 +1627,24 @@ function togglePlay(){
   if (playing){ stopAudio(); return; }
   var n = state.hymn, url = tuneUrl(n);
   if (!url) return;
-  // A second tap while the tune is still being fetched means stop, not start
-  // again: without this a slow signal stacks up fetches and then plays them
-  // over one another.
-  if (loadingFor !== null){ stopAudio(); return; }
 
   // Must happen inside the tap, before any waiting. See unlockAudio above.
   if (!unlockAudio()){
     toast("This browser cannot play the tune");
     return;
   }
-  if (!/\.midi?$/i.test(url)){ playFile(url); return; }
-
-  function start(tune){
-    if (loadingFor !== n) return;
-    whenRunning().then(function(){
-      if (loadingFor !== n) return;
-      loadingFor = null;
-      playTune(tune);
-    }, function(){
-      stopAudio();
-      toast("Sound is blocked on this phone. Tap play once more.");
-    });
+  if (actx.state !== "running"){
+    toast("Sound is blocked. Check the silent switch and the volume.");
   }
-
-  loadingFor = n;
+  if (!/\.midi?$/i.test(url)){ playFile(url); return; }
+  if (tuneCache[n]){ playTune(tuneCache[n]); return; }
   $("playLabel").textContent = "Loading";
-  if (tuneCache[n]){ start(tuneCache[n]); return; }
   fetch(url).then(function(r){
     if (!r.ok) throw new Error("missing");
     return r.arrayBuffer();
   }).then(function(buf){
-    if (loadingFor !== n) return;
     tuneCache[n] = parseMidi(buf);
-    start(tuneCache[n]);
+    playTune(tuneCache[n]);
   }).catch(function(){
     stopAudio();
     // Opened straight off the disk, a fetch is blocked before it starts, so
@@ -1636,31 +1658,26 @@ function togglePlay(){
 }
 
 /* ---------- clear saved ---------- */
-/* One clear note, started inside the tap and sent down the same path a tune
-   takes, so that hearing it means a tune will be heard too. If this is silent
-   but the phone can play other sound, the volume is the culprit, not the app.
-   If it sounds but a hymn does not, the problem is loading the tune. */
+/* One clear note, started inside the tap. If this is silent but the phone can
+   play other sound, the silent switch or the volume is the culprit, not the
+   app. If it sounds but a hymn does not, the problem is loading the tune. */
 $("soundCheck").addEventListener("click", function(){
   if (!unlockAudio()){ toast("This browser cannot make sound"); return; }
+  if (actx.state !== "running"){
+    toast("Sound is blocked. Check the silent switch and the volume.");
+    return;
+  }
+  var osc = actx.createOscillator(), g = actx.createGain();
+  osc.type = "triangle";
+  osc.frequency.value = 440;
+  var t = actx.currentTime;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.25, t + 0.03);
+  g.gain.setValueAtTime(0.25, t + 0.7);
+  g.gain.linearRampToValueAtTime(0, t + 0.9);
+  osc.connect(g); g.connect(actx.destination);
+  osc.start(t); osc.stop(t + 0.95);
   toast("Playing one note now");
-  whenRunning().then(function(){
-    var osc = actx.createOscillator(), g = actx.createGain();
-    osc.type = "triangle";
-    osc.frequency.value = 440;
-    var t = actx.currentTime;
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.25, t + 0.03);
-    g.gain.setValueAtTime(0.25, t + 0.7);
-    g.gain.linearRampToValueAtTime(0, t + 0.9);
-    osc.connect(g); g.connect(actx.destination);
-    osc.start(t); osc.stop(t + 0.95);
-    // Hand the media session back once the note is over, unless a tune has
-    // started in the meantime and is still using it.
-    setTimeout(releaseMediaSession, 1200);
-  }, function(){
-    releaseMediaSession();
-    toast("Sound is blocked on this phone. Tap Test once more.");
-  });
 });
 
 $("clearSaved").addEventListener("click", function(){
@@ -1756,16 +1773,6 @@ try {
 } catch (e) {}
 
 })();
-</script>
-
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker.register("sw.js").catch(function () {
-      /* Offline support is a bonus; the app still works without it. */
-    });
-  });
-}
 </script>
 </body>
 </html>
