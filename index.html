@@ -157,7 +157,7 @@ button{font:inherit;color:inherit}
   min-height:54px;
   color:var(--ink);
 }
-.readout-num.empty{color:var(--ink-3);font-weight:400}
+.readout-num.is-empty{color:var(--ink-3);font-weight:400}
 .readout-title{
   margin-top:10px;
   font-family:var(--serif);
@@ -439,10 +439,17 @@ button{font:inherit;color:inherit}
 .toast[hidden]{display:none !important}
 
 /* ---------- number box: one size, empty or filled ---------- */
-.readout{height:146px;overflow:hidden}
-.readout-num{height:54px;min-height:0;white-space:nowrap;overflow:hidden}
+/* Heights are in em, so they follow whatever size the number and the title
+   are set at, on any phone. The box never takes its height from the text
+   inside it, so it cannot grow or shrink as digits are typed, and nothing
+   inside is ever clipped. */
+.readout{height:auto;overflow:visible}
+.readout-num{
+  height:1.2em;min-height:0;line-height:1.2;
+  white-space:nowrap;overflow:visible;
+}
 .readout-title{
-  height:49px;min-height:0;overflow:hidden;
+  line-height:1.35;height:2.7em;min-height:0;overflow:hidden;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
 }
 
@@ -609,7 +616,7 @@ button{font:inherit;color:inherit}
       <p class="eyebrow">Enter the hymn number</p>
 
       <div class="readout">
-        <div class="readout-num empty" id="padNum" aria-live="polite">000</div>
+        <div class="readout-num is-empty" id="padNum" aria-live="polite">000</div>
         <div class="readout-title" id="padTitle">Type the number announced in the service.</div>
       </div>
 
@@ -946,19 +953,20 @@ var CONFIG = {
 
   // Tune playback.
   //
-  //   base    the folder in the repository holding the tune files
-  //   pattern the file name, where {n} becomes the hymn number padded to
-  //           three digits. The OPC files are named Th1_001.mid, so the
-  //           default below matches them with no renaming needed.
-  //   have    which hymn numbers you have actually uploaded, so the Play
-  //           button only appears where it will work. Use the string "all"
-  //           once the whole folder is in place.
+  //   base     the folder in the repository holding the tune files
+  //   patterns the file names to look for, tried in order. {n} becomes the
+  //            hymn number padded to three digits. The OPC MIDI files are
+  //            named Th1_001.mid, so they work with no renaming; plain
+  //            001.mid and 001.ogg files work too, and so does a mix.
+  //   have     "all" makes the app look for a tune on every hymn and show
+  //            the Play button only where a file is actually found. A list
+  //            of numbers limits the search to those hymns.
   //
   // Leave base empty and the Play button stays hidden everywhere.
   audio: {
     base: "tunes",
-    pattern: "{n}.ogg",
-    have: [1, 26, 32, 35, 77, 80, 81, 86, 87, 133, 141, 149, 152, 161, 168, 178, 186, 216, 218, 269, 270, 402, 421, 431, 460, 500, 501, 533, 582, 700],
+    patterns: ["Th1_{n}.mid", "{n}.mid", "{n}.ogg"],
+    have: "all",
     label: "Play the tune"
   },
 
@@ -1067,12 +1075,12 @@ function renderPad(){
   var numEl = $("padNum"), titleEl = $("padTitle");
   if (!n){
     numEl.textContent = "000";
-    numEl.classList.add("empty");
+    numEl.classList.add("is-empty");
     titleEl.textContent = "Type the number announced in the service.";
     $("padGo").disabled = true;
     return;
   }
-  numEl.classList.remove("empty");
+  numEl.classList.remove("is-empty");
   numEl.textContent = n;
   var h = BY_NUM[parseInt(n,10)];
   if (h){
@@ -1437,13 +1445,41 @@ function hasTune(n){
   if (!HAVE_TUNE) return false;
   return HAVE_TUNE === true || HAVE_TUNE[n] === true;
 }
-function tuneUrl(n){
-  if (!hasTune(n)) return null;
+function tuneCandidates(n){
+  if (!hasTune(n)) return [];
   var a = CONFIG.audio;
-  var base = a.base.replace(/\/+$/, "");
-  var name = (a.pattern || "{n}.mid").replace("{n}", String(n).padStart(3, "0"));
-  return base + "/" + name;
+  var base = a.base.replace(/\/+$/, "") + "/";
+  var pats = a.patterns || (a.pattern ? [a.pattern] : ["{n}.mid"]);
+  var num = String(n).padStart(3, "0");
+  return pats.map(function(p){ return base + p.replace("{n}", num); });
 }
+/* The button used to depend on a hand-typed list of hymn numbers. Replacing
+   index.html with a copy that carried a shorter list hid it on every other
+   hymn. Now the app checks which file is really there and remembers it. */
+var tuneFound = {};
+function probe(url){
+  return fetch(url, { method: "HEAD", cache: "no-cache" }).then(function(r){
+    if (r.ok) return true;
+    if (r.status === 405 || r.status === 501){
+      return fetch(url, { cache: "no-cache" }).then(function(g){ return g.ok; });
+    }
+    return false;
+  }).catch(function(){ return false; });
+}
+function resolveTune(n){
+  if (n in tuneFound) return Promise.resolve(tuneFound[n]);
+  var list = tuneCandidates(n), i = 0;
+  function next(){
+    if (i >= list.length){ tuneFound[n] = null; return null; }
+    var url = list[i++];
+    return probe(url).then(function(ok){
+      if (ok){ tuneFound[n] = url; return url; }
+      return next();
+    });
+  }
+  return Promise.resolve(next());
+}
+function tuneUrl(n){ return tuneFound[n] || null; }
 
 /* A small MIDI reader. Hymn tunes are four-part harmony with no instrument
    tricks, so the notes themselves are all we need: no player library, no
@@ -1533,7 +1569,11 @@ function setupAudio(h){
   var btn = $("playBtn");
   if (!btn) return;
   stopAudio();
-  btn.hidden = !tuneUrl(h.n);
+  btn.hidden = true;
+  if (!hasTune(h.n)) return;
+  resolveTune(h.n).then(function(url){
+    if (url && state.hymn === h.n) btn.hidden = false;
+  });
 }
 /* A whole hymn runs to three minutes and a few thousand notes, so notes are
    scheduled a few seconds ahead rather than all at once. That keeps an older
