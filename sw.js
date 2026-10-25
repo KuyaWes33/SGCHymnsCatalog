@@ -7,7 +7,7 @@
  * When you change index.html, bump VERSION. Phones pick up the new version
  * the next time they are opened with a connection.
  */
-const VERSION = "v4";
+const VERSION = "v5";
 const SHELL = `hymnal-shell-${VERSION}`;
 const TUNES = "hymnal-tunes";
 
@@ -20,6 +20,7 @@ const SHELL_FILES = [
   "icons/icon-maskable-512.png",
   "icons/apple-touch-icon.png",
   "icons/favicon-32.png",
+  "icons/logo.png",
   "extra-hymns.json",
 ];
 

@@ -120,7 +120,6 @@ Open `index.html` and find `var CONFIG` near the top of the script.
 
 | Setting | What it does |
 | --- | --- |
-| `church` | The church name. Appears in the header, on the home screen, and in the About and Terms pages. |
 | `logo` | Path to the church logo, for example `icons/logo.svg`. Leave empty and the app uses its own drawn mark. |
 | `audio` | Already set up for the `tunes` folder. Nothing to change. |
 | `scans` | Leave empty. See the copyright note below. |
@@ -265,7 +264,7 @@ mismatch is visible rather than quietly misleading.
 index.html              the app, including all 729 hymns
 manifest.webmanifest    makes it installable, sets the icon and launch screen
 sw.js                   offline support
-icons/                  app icons, placeholders until the church logo arrives
+icons/                  the logo and app icons, made from the church logo
 tunes/                  761 MIDI tunes from the OPC
 extra-hymns.json        hymns you have added or corrected
 editor.html             a form that builds extra-hymns.json for you

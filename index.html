@@ -4,58 +4,74 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Trinity Hymnal Companion</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#0F7F81" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F2324" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
 <style>
 :root{
-  --paper:#F8F9FA;
+  /* Colours follow the Sovereign Grace Church logo: its teal, the deeper
+     teal of its long shadow, and white. The logo's own teal is too light to
+     carry small white text, so text and buttons use a deeper step of it. */
+  --brand:#1CA9AB;
+  --brand-deep:#148E90;
+  --paper:#F2F8F8;
   --surface:#FFFFFF;
-  --sunken:#EDEFF2;
-  --ink:#15191E;
-  --ink-2:#4B5560;
-  --ink-3:#6E7883;
-  --rule:#D6DBE0;
-  --rule-soft:#E6E9ED;
-  --accent:#22405C;
+  --sunken:#E2EFEF;
+  --ink:#0E2627;
+  --ink-2:#36595A;
+  --ink-3:#4F6F70;
+  --rule:#C9DEDE;
+  --rule-soft:#DDEBEB;
+  --accent:#0F7F81;
   --accent-ink:#FFFFFF;
-  --accent-soft:#E3EAF1;
-  --mark:#7E6026;
-  --shadow:0 1px 2px rgba(21,25,30,.08), 0 6px 18px rgba(21,25,30,.06);
+  --accent-soft:#D6EFEF;
+  --mark:#0E6E70;
+  --bar:#0F7F81;
+  --bar-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(14,38,39,.08), 0 6px 18px rgba(14,38,39,.07);
   --sans:"Libre Franklin", "Helvetica Neue", Arial, sans-serif;
   --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
   --lyric-size:20px;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#0F1317;
-    --surface:#171C22;
-    --sunken:#1E242B;
-    --ink:#E7EAEE;
-    --ink-2:#9BA5B0;
-    --ink-3:#7E8994;
-    --rule:#2B333B;
-    --rule-soft:#232A31;
-    --accent:#8FB9D9;
-    --accent-ink:#0F1317;
-    --accent-soft:#1C2B38;
-    --mark:#C9A961;
+    --paper:#0A1819;
+    --surface:#0F2324;
+    --sunken:#153031;
+    --ink:#E2F0F0;
+    --ink-2:#A3C2C3;
+    --ink-3:#82A4A5;
+    --rule:#234344;
+    --rule-soft:#1A3637;
+    --accent:#2EC3C5;
+    --accent-ink:#04191A;
+    --accent-soft:#123B3C;
+    --mark:#5FD0D2;
+    --bar:#0F2324;
+    --bar-ink:#E2F0F0;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.3);
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0F1317;
-  --surface:#171C22;
-  --sunken:#1E242B;
-  --ink:#E7EAEE;
-  --ink-2:#9BA5B0;
-  --ink-3:#7E8994;
-  --rule:#2B333B;
-  --rule-soft:#232A31;
-  --accent:#8FB9D9;
-  --accent-ink:#0F1317;
-  --accent-soft:#1C2B38;
-  --mark:#C9A961;
+  --paper:#0A1819;
+  --surface:#0F2324;
+  --sunken:#153031;
+  --ink:#E2F0F0;
+  --ink-2:#A3C2C3;
+  --ink-3:#82A4A5;
+  --rule:#234344;
+  --rule-soft:#1A3637;
+  --accent:#2EC3C5;
+  --accent-ink:#04191A;
+  --accent-soft:#123B3C;
+  --mark:#5FD0D2;
+  --bar:#0F2324;
+  --bar-ink:#E2F0F0;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.3);
 }
 
@@ -71,6 +87,10 @@ body{
   -webkit-text-size-adjust:100%;
 }
 button{font:inherit;color:inherit}
+/* Two quick taps, as when typing 44 on the keypad, would otherwise zoom the
+   page on a phone. This turns off double-tap zoom only; pinching to zoom
+   still works for anyone who needs it. */
+html,button,a,input,label{touch-action:manipulation}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
 /* ---------- shell ---------- */
@@ -89,8 +109,9 @@ button{font:inherit;color:inherit}
   display:flex;align-items:center;gap:10px;
   min-height:60px;
   padding:8px 16px;
-  background:var(--surface);
-  border-bottom:1px solid var(--rule);
+  background:var(--bar);
+  color:var(--bar-ink);
+  border-bottom:3px solid var(--brand);
 }
 .topbar h1{
   margin:0;
@@ -98,20 +119,27 @@ button{font:inherit;color:inherit}
   font-size:19px;font-weight:600;letter-spacing:.005em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
+/* At 19px the title misses fitting a 375px phone by a hair. */
+@media (max-width:400px){ .topbar h1{font-size:18px} }
 .topbar .sub{
   display:block;
   font-family:var(--sans);
-  font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--ink-3);
+  font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--bar-ink);opacity:.9;
 }
 .mark{flex:0 0 auto;display:block}
+/* display:block above would otherwise beat the hidden attribute, leaving the
+   drawn mark showing beside a loaded logo. */
+.mark[hidden],.hero-logo[hidden]{display:none}
 .markbtn{
   flex:0 0 auto;display:flex;align-items:center;justify-content:center;
   width:46px;height:46px;margin-left:-8px;
-  border:0;border-radius:4px;background:transparent;cursor:pointer;
+  border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer;
 }
-.markbtn:hover{background:var(--sunken)}
-.logo{width:30px;height:30px;object-fit:contain}
+.markbtn:hover,.topbar .iconbtn:hover{background:rgba(255,255,255,.14)}
+.topbar .iconbtn,.topbar .iconbtn:hover{color:var(--bar-ink)}
+/* The logo is teal on teal in the bar, so a thin white ring keeps it apart. */
+.logo{width:36px;height:36px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.85);object-fit:cover}
 .iconbtn{flex:0 0 auto;min-width:44px;padding:0;color:var(--ink-2)}
 .iconbtn:hover{color:var(--ink)}
 
@@ -188,9 +216,10 @@ button{font:inherit;color:inherit}
 /* ---------- home ---------- */
 .hero{text-align:center;padding:14px 0 26px}
 .hero-logo{
-  display:block;width:88px;height:88px;margin:0 auto 16px;
+  display:block;width:132px;height:132px;margin:0 auto 18px;
   object-fit:contain;color:var(--accent);
 }
+img.hero-logo{border-radius:50%;box-shadow:0 0 0 4px var(--surface), 0 0 0 5px var(--rule), var(--shadow)}
 .hero-name{
   margin:0;font-family:var(--serif);font-size:25px;line-height:1.2;
   font-weight:600;text-wrap:balance;
@@ -228,6 +257,7 @@ button{font:inherit;color:inherit}
 }
 .row-body{flex:1 1 auto;min-width:0}
 .row-title{font-family:var(--serif);font-size:17px;line-height:1.35}
+.row-title,.row-meta,.row-snip{display:block}
 .row-meta{font-size:13px;color:var(--ink-3);margin-top:3px}
 .row-snip{font-size:14px;color:var(--ink-2);margin-top:4px;font-family:var(--serif)}
 .row-snip mark{background:var(--accent-soft);color:var(--ink);padding:0 2px}
@@ -555,7 +585,6 @@ button{font:inherit;color:inherit}
     </button>
     <div style="min-width:0;flex:1 1 auto">
       <h1 id="barTitle">Trinity Hymnal Companion</h1>
-      <span class="sub" id="barSub"></span>
     </div>
     <button class="btn-quiet iconbtn" type="button" id="settingsBtn" aria-label="Settings and information">
       <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
@@ -582,7 +611,7 @@ button{font:inherit;color:inherit}
           <line x1="46.5" y1="56" x2="46.5" y2="24" stroke="currentColor" stroke-width="5"/>
           <path d="M46.5 24 L65 29 L65 37 L46.5 32 Z" fill="currentColor"/>
         </svg>
-        <h2 class="hero-name" id="heroName"></h2>
+        <h2 class="hero-name" id="heroName">Trinity Hymnal Companion</h2>
         <p class="hero-sub">Trinity Hymnal, original 1961 edition</p>
       </div>
 
@@ -788,7 +817,7 @@ button{font:inherit;color:inherit}
       <div class="prose">
         <h2>About this app</h2>
         <p class="updated">Preview build, September 2026</p>
-        <p>This app holds the hymn texts of the original <em>Trinity Hymnal</em> (1961) so the congregation can follow along on a phone when a book is not at hand. It is maintained by the media team of <span class="churchName"></span>.</p>
+        <p>This app holds the hymn texts of the original <em>Trinity Hymnal</em> (1961) so the congregation can follow along on a phone when a book is not at hand. It is maintained by the church's media team.</p>
 
         <h3>What is in this build</h3>
         <p>Hymn numbers match the printed book. Hymns are being added in batches, so a number that is not here yet will be added later.</p>
@@ -855,7 +884,7 @@ button{font:inherit;color:inherit}
         <p class="updated">Last updated 17 September 2026</p>
 
         <h3>Who this is for</h3>
-        <p>The app is provided free of charge for the members and visitors of <span class="churchName"></span>, for use in worship and in private devotion.</p>
+        <p>The app is provided free of charge for church members and visitors, for use in worship and in private devotion.</p>
 
         <h3>Copyright in the hymns</h3>
         <p>The hymn texts included here are in the public domain. <em>Trinity Hymnal</em> as a published collection, together with its typesetting, musical settings and any hymns still under copyright, belongs to Great Commission Publications. Nothing in this app grants you a licence to those works.</p>
@@ -939,17 +968,13 @@ button{font:inherit;color:inherit}
 
 /* ----------------------------------------------------------
    CONFIG
-   Change these two lines and the church name updates
-   everywhere in the app, including the legal pages.
+   The logo, the tunes, and the scanned pages.
    ---------------------------------------------------------- */
 var CONFIG = {
-  // The church name, used in the header, the About page and the Terms page.
-  church: "Reformed Baptist Church",
-
   // Drop a logo file into the repository and put its path here. Leave it
   // empty and the app falls back to the drawn mark. A square SVG or PNG of
   // at least 256 pixels works best.
-  logo: "",
+  logo: "icons/logo.png",
 
   // Tune playback.
   //
@@ -1420,14 +1445,13 @@ function updateRecent(){
 
 /* ---------- branding ---------- */
 function applyBranding(){
-  $("barSub").textContent = CONFIG.church;
-  $("heroName").textContent = CONFIG.church;
-  document.querySelectorAll(".churchName").forEach(function(el){ el.textContent = CONFIG.church; });
   if (!CONFIG.logo) return;
   [["logoImg","logoFallback"],["heroLogo","heroFallback"]].forEach(function(pair){
     var img = $(pair[0]), fallback = $(pair[1]);
-    img.onload = function(){ img.hidden = false; fallback.hidden = true; };
-    img.onerror = function(){ img.hidden = true; fallback.hidden = false; };
+    // The fallbacks are SVG, where .hidden is not a real property, so set the
+    // attribute itself.
+    img.onload = function(){ img.hidden = false; fallback.setAttribute("hidden", ""); };
+    img.onerror = function(){ img.hidden = true; fallback.removeAttribute("hidden"); };
     img.src = CONFIG.logo;
   });
 }
