@@ -983,6 +983,8 @@ var CONFIG = {
   //            hymn number padded to three digits. The OPC MIDI files are
   //            named Th1_001.mid, so they work with no renaming; plain
   //            001.mid and 001.ogg files work too, and so does a mix.
+  //            A hymn printed with two tunes has files ending f and s
+  //            (Th1_549f.mid, Th1_549s.mid); the first tune is used.
   //   have     "all" makes the app look for a tune on every hymn and show
   //            the Play button only where a file is actually found. A list
   //            of numbers limits the search to those hymns.
@@ -990,7 +992,7 @@ var CONFIG = {
   // Leave base empty and the Play button stays hidden everywhere.
   audio: {
     base: "tunes",
-    patterns: ["Th1_{n}.mid", "{n}.mid", "{n}.ogg"],
+    patterns: ["Th1_{n}.mid", "Th1_{n}f.mid", "{n}.mid", "{n}.ogg"],
     have: "all",
     label: "Play the tune"
   },
@@ -1488,7 +1490,13 @@ function probe(url){
       return fetch(url, { cache: "no-cache" }).then(function(g){ return g.ok; });
     }
     return false;
-  }).catch(function(){ return false; });
+  }).catch(function(){
+    // No signal. The service worker only answers plain fetches, so this check
+    // never reaches it; look in its store directly for a tune kept from an
+    // earlier play.
+    if (!window.caches) return false;
+    return caches.match(url).then(function(hit){ return !!hit; }).catch(function(){ return false; });
+  });
 }
 function resolveTune(n){
   if (n in tuneFound) return Promise.resolve(tuneFound[n]);
@@ -1837,6 +1845,16 @@ try {
 } catch (e) {}
 
 })();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () {
+      /* Offline support is a bonus; the app still works without it. */
+    });
+  });
+}
 </script>
 </body>
 </html>
