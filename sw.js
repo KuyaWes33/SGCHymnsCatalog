@@ -22,6 +22,7 @@ const SHELL_FILES = [
   "icons/favicon-32.png",
   "icons/logo.png",
   "extra-hymns.json",
+  "changes.json",
 ];
 
 self.addEventListener("install", (event) => {
@@ -49,6 +50,13 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// The page asks which version this is, to tell people what changed.
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "version" && event.ports[0]) {
+    event.ports[0].postMessage({ version: VERSION });
+  }
+});
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
@@ -70,9 +78,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Added hymns: network first, so a new hymn shows up as soon as it is
-  // uploaded, with the cached copy kept for when there is no signal.
-  if (url.pathname.endsWith("extra-hymns.json")) {
+  // Added hymns and the list of changes: network first, so a new hymn or a
+  // new note shows up as soon as it is uploaded, with the cached copy kept
+  // for when there is no signal.
+  if (url.pathname.endsWith("extra-hymns.json") || url.pathname.endsWith("changes.json")) {
     event.respondWith(
       fetch(req)
         .then((res) => {

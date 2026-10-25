@@ -468,6 +468,27 @@ img.hero-logo{border-radius:50%;box-shadow:0 0 0 4px var(--surface), 0 0 0 5px v
 }
 .toast[hidden]{display:none !important}
 
+/* ---------- update notice ---------- */
+/* Sits above the bottom bar, the width of the app, so it never covers the
+   keypad's top rows or the hymn title. */
+.update{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(74px + env(safe-area-inset-bottom, 0px));
+  width:min(528px, calc(100vw - 32px));
+  max-height:60vh;overflow-y:auto;
+  background:var(--surface);color:var(--ink);
+  border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:6px;
+  box-shadow:var(--shadow);
+  padding:14px 16px 12px;
+  z-index:19;
+}
+.update[hidden]{display:none !important}
+.update-title{margin:0;font-family:var(--serif);font-size:18px;font-weight:600}
+.update-notes{margin:8px 0 12px;padding-left:20px;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.update-notes li + li{margin-top:4px}
+.update-actions{display:flex;gap:8px;justify-content:flex-end}
+.update-actions .btn{min-height:44px}
+
 /* ---------- number box: one size, empty or filled ---------- */
 /* Heights are in em, so they follow whatever size the number and the title
    are set at, on any phone. The box never takes its height from the text
@@ -960,6 +981,15 @@ img.hero-logo{border-radius:50%;box-shadow:0 0 0 4px var(--surface), 0 0 0 5px v
   </nav>
 
   <div class="toast" id="toast" role="status" hidden></div>
+
+  <div class="update" id="update" role="status" aria-live="polite" hidden>
+    <p class="update-title" id="updateTitle"></p>
+    <ul class="update-notes" id="updateNotes"></ul>
+    <div class="update-actions">
+      <button class="btn btn-quiet" type="button" id="updateLater"></button>
+      <button class="btn btn-primary" type="button" id="updateGo" hidden>Refresh now</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1840,9 +1870,158 @@ function applyExtras(list){
 try {
   fetch("extra-hymns.json", { cache: "no-cache" })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(list){ if (list) applyExtras(list); })
+    .then(function(list){ if (list){ applyExtras(list); noteHymnChanges(list); } })
     .catch(function(){ /* nothing to add, or offline before it was cached */ });
 } catch (e) {}
+
+/* ----------------------------------------------------------
+   Update notice.
+
+   A new version is fetched in the background while the old one is on
+   screen, so without a word nobody knows to refresh, and corrections seem
+   not to arrive. This says what changed, in the words written in
+   changes.json, and offers the refresh.
+
+   It shows in three cases:
+     - a new version arrives while the app is open: offer to refresh now
+     - the app opens on a version this phone has not been told about,
+       because it updated while closed or "Later" was chosen: say what is new
+     - extra-hymns.json has added or corrected hymns since last time
+   ---------------------------------------------------------- */
+var SEEN = "thc.version", EXTRAS_SEEN = "thc.extras";
+
+function askVersion(worker){
+  return new Promise(function(resolve){
+    if (!worker || !window.MessageChannel){ resolve(null); return; }
+    var ch = new MessageChannel(), done = false;
+    ch.port1.onmessage = function(e){ done = true; resolve(e.data && e.data.version || null); };
+    try { worker.postMessage({ type: "version" }, [ch.port2]); } catch (e){ resolve(null); return; }
+    // A service worker from before this notice existed never answers.
+    setTimeout(function(){ if (!done) resolve(null); }, 3000);
+  });
+}
+
+/* The notes for every version after "from", up to and including "to",
+   newest first. changes.json lists the newest first. */
+function notesBetween(from, to){
+  return fetch("changes.json", { cache: "no-cache" })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .catch(function(){ return []; })
+    .then(function(list){
+      if (!Array.isArray(list)) return [];
+      var out = [], on = !to;
+      for (var i = 0; i < list.length && out.length < 12; i++){
+        var e = list[i];
+        if (!e || !e.version) continue;
+        if (e.version === from) break;
+        if (e.version === to) on = true;
+        if (on && Array.isArray(e.notes)) out = out.concat(e.notes);
+      }
+      return out;
+    });
+}
+
+var noticeMode = null;
+function showNotice(mode, title, notes){
+  var box = $("update"), list = $("updateNotes");
+  // Refreshing matters more than news, so it takes over a notice already
+  // showing; anything else adds its lines to the one on screen.
+  if (box.hidden || mode === "refresh"){
+    list.innerHTML = "";
+    $("updateTitle").textContent = title;
+  }
+  if (mode === "refresh" || noticeMode !== "refresh") noticeMode = mode;
+  notes.forEach(function(text){
+    var li = document.createElement("li");
+    li.textContent = text;
+    list.appendChild(li);
+  });
+  $("updateGo").hidden = (noticeMode !== "refresh");
+  $("updateLater").textContent = noticeMode === "refresh" ? "Later" : "OK";
+  box.hidden = false;
+}
+$("updateLater").addEventListener("click", function(){ $("update").hidden = true; noticeMode = null; });
+
+/* Someone who has used the app before, rather than a first visit. */
+function returning(){
+  try {
+    return ["thc.last", "thc.saved", "thc.size"].some(function(k){ return localStorage.getItem(k) !== null; });
+  } catch (e){ return false; }
+}
+
+/* The version on screen, compared with the last one this phone was told
+   about. */
+function noteRunning(running){
+  var seen = store.get(SEEN, null);
+  store.set(SEEN, running);
+  if (seen === running) return;
+  // No record: a first visit says nothing, but someone who used the app
+  // before this notice existed is told about the version they now have.
+  if (seen === null && !returning()) return;
+  notesBetween(seen, running).then(function(notes){
+    if (notes.length) showNotice("news", "What's new", notes);
+  });
+}
+
+function offerRefresh(running, fresh){
+  notesBetween(running, fresh).then(function(notes){
+    if (!notes.length) notes = ["Corrections and improvements."];
+    $("updateGo").onclick = function(){
+      // Told now, so the next open does not repeat it.
+      if (fresh) store.set(SEEN, fresh);
+      location.reload();
+    };
+    showNotice("refresh", "An update is ready", notes);
+  });
+}
+
+if ("serviceWorker" in navigator){
+  var sw = navigator.serviceWorker, hadController = !!sw.controller, running = null;
+  askVersion(sw.controller).then(function(v){
+    running = v;
+    if (v) noteRunning(v);
+  });
+  sw.addEventListener("controllerchange", function(){
+    // The first install also changes controller; there is nothing to announce.
+    if (!hadController) return;
+    askVersion(sw.controller).then(function(fresh){
+      if (fresh && fresh === running) return;
+      offerRefresh(running, fresh);
+    });
+  });
+  // An installed app is often brought back from the background rather than
+  // opened afresh, and only a fresh open checks for a new version, so check
+  // whenever it comes back, at most every ten minutes.
+  var lastCheck = Date.now();
+  document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState !== "visible" || Date.now() - lastCheck < 600000) return;
+    lastCheck = Date.now();
+    sw.getRegistration().then(function(reg){ if (reg) reg.update(); }).catch(function(){});
+  });
+}
+
+/* A short fingerprint of each added or corrected hymn, so a change to any
+   word of one is noticed. */
+function fingerprint(h){
+  var s = JSON.stringify(h), x = 5381;
+  for (var i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) | 0;
+  return x;
+}
+function noteHymnChanges(list){
+  if (!Array.isArray(list)) return;
+  var before = store.get(EXTRAS_SEEN, null), now = {}, changed = [];
+  list.forEach(function(h){
+    if (!h || typeof h.n !== "number") return;
+    now[h.n] = fingerprint(h);
+    if (before && before[h.n] !== now[h.n]) changed.push(h.n);
+  });
+  store.set(EXTRAS_SEEN, now);
+  // The first time, everything would look new; say nothing.
+  if (!before || !changed.length) return;
+  changed.sort(function(a, b){ return a - b; });
+  showNotice("news", "Hymns updated",
+    [(changed.length === 1 ? "Hymn " : "Hymns ") + changed.join(", ") + (changed.length === 1 ? " was" : " were") + " added or corrected."]);
+}
 
 })();
 </script>

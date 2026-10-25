@@ -169,6 +169,32 @@ connection.
 `v2`, and so on. Without that, installed phones keep serving the old copy
 from their own cache and your correction never arrives.
 
+**Then add a note to the top of `changes.json`** with the same version, so
+people are told what changed:
+
+```json
+[
+ {
+  "version": "v6",
+  "date": "2026-11-01",
+  "notes": [
+   "Hymn 100 has its chorus shown separately.",
+   "Bigger buttons on the keypad."
+  ]
+ },
+ ...the older entries stay below...
+]
+```
+
+Write the notes for the congregation, a line each. A phone that is open
+when the new version arrives shows them with a **Refresh now** button; one
+that updated while closed, or where someone chose **Later**, shows them as
+"What's new" the next time it opens. Each phone is told once. A version with
+no entry still offers the refresh, with a general line instead of notes.
+
+Hymns you add or correct in `extra-hymns.json` need neither step. Phones
+pick them up on their own and say "Hymn 582 was added or corrected".
+
 To change how a chorus is handled, edit `refrains.py` in the build tooling:
 add the hymn number to `CONFIRMED_BLOCK2` to separate its chorus, or to
 `NOT_A_CHORUS` to leave it numbered, then rerun the build.
@@ -267,6 +293,7 @@ sw.js                   offline support
 icons/                  the logo and app icons, made from the church logo
 tunes/                  761 MIDI tunes from the OPC
 extra-hymns.json        hymns you have added or corrected
+changes.json            what changed in each version, shown to people when it arrives
 editor.html             a form that builds extra-hymns.json for you
 chorus-check.txt        what was decided about each hymn's chorus
 README.md               this file
