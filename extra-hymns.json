@@ -34,7 +34,9 @@
  },
  {
   "n": 582,
-  "t": "My Hope is Build on Nothing less",
+  "t": "My hope is built on nothing less",
+  "tune": "The Solid Rock",
+  "meter": "Long Meter",
   "v": [
    [
     "My hope is built on nothing less",
@@ -74,7 +76,7 @@
   "src": "Romans 5:8",
   "v": [
    [
-    "1 And can it be that I should gain",
+    "And can it be that I should gain",
     "An int'rest in the Savior's blood?",
     "Died He for me, who caused His pain?",
     "For me, who Him to death pursued?",
@@ -82,7 +84,7 @@
     "That Thou, my God, should die for me?"
    ],
    [
-    "2 'Tis mystery all! Th'Immortal dies!",
+    "'Tis mystery all! Th'Immortal dies!",
     "Who can explore His strange design?",
     "In vain the firstborn seraph tries",
     "To sound the depths of love divine!",
@@ -90,7 +92,7 @@
     "Let angel minds inquire no more."
    ],
    [
-    "3 He left His Father's throne above,",
+    "He left His Father's throne above,",
     "So free, so infinite His grace;",
     "Emptied Himself of all but love,",
     "And bled for Adam's helpless race;",
@@ -98,7 +100,7 @@
     "For, O my God, it found out me."
    ],
    [
-    "4 Long my imprisoned spirit lay",
+    "Long my imprisoned spirit lay",
     "Fast bound in sin and nature's night;",
     "Thine eye diffused a quick'ning ray,",
     "I woke, the dungeon flamed with light;",
@@ -106,7 +108,7 @@
     "I rose, went forth and followed Thee."
    ],
    [
-    "5 No condemnation now I dread;",
+    "No condemnation now I dread;",
     "Jesus, and all in Him is mine!",
     "Alive in Him, my living Head,",
     "And clothed in righteousness divine,",
@@ -115,7 +117,6 @@
    ]
   ],
   "refrain": [
-   "Refrain:",
    "Amazing love! how can it be",
    "That Thou, my God, should die for me!"
   ]
