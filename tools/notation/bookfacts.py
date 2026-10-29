@@ -91,7 +91,7 @@ def staves(ink):
     out, i = [], 0
     while i <= len(ys) - 5:
         gaps = np.diff(ys[i:i + 5])
-        if gaps.min() > 5 and gaps.max() - gaps.min() <= 2.5:
+        if gaps.min() > 5 and gaps.max() - gaps.min() <= 3.5:
             out.append((ys[i], ys[i + 4])); i += 5
         else:
             i += 1

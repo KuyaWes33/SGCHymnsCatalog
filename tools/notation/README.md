@@ -43,8 +43,7 @@ with a little human timing. They hold the right notes, but:
 | The Amen played slowly | Writes it as even chords from the next barline |
 | Two parts on the same note, struck as one key twice | Pairs each release with the right note |
 
-Words are not under the notes. The tune files have none; the app shows the
-verses beneath the music.
+The tune files have no words. Those come from the book, below.
 
 ## Where the first barline goes
 
@@ -67,6 +66,31 @@ times in four, and the hymn is marked for checking.
 ```
 
 It holds only those counts, so a build needs no scans.
+
+## The words between the staves
+
+As in the hymnal, each verse runs between the treble and bass staves, a
+syllable under each note, with the chorus under its own music.
+
+```
+.venv/bin/python tools/notation/lyrics.py "/path/to/Trinity Hymnal.pdf" 1 14 677
+.venv/bin/python tools/notation/build.py 1 14 677
+```
+
+`lyrics.py` reads each hymn's printed page: where each word breaks into
+syllables, and where each syllable sits. The spelling always comes from the
+app's own text, so a misread letter never reaches the score; a word the
+reading missed is split by dictionary and fitted between its neighbours.
+What it reads goes to `build/notation/lyrics/`, and `build.py` uses it
+wherever it is there.
+
+Tried on 11 hymns so far; 8 match the book. Known gaps:
+
+- A chorus that starts part way through a line of music (441).
+- Some syllables a note early after a dotted rhythm (13), or a bar early
+  in a long line (78).
+- Verses the book prints below the music, not between the staves, are left
+  out for now.
 
 ## Checking against the book
 
@@ -103,6 +127,7 @@ name, `tunes/Th1_014.mid`, without the leading zeros.
 midi2score.py     the converter, for one tune
 build.py          every tune, with the report
 bookfacts.py      reads where each hymn's first barline falls from the book
+lyrics.py         reads the words of each verse from the book
 book-facts.json   what bookfacts.py read
 review.py         the page for checking against the book
 render.py         a quick SVG of one score, for looking at

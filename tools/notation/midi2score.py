@@ -76,9 +76,20 @@ def load(path):
 def verse_one(notes):
     """The notes of the first pass, the Amen if there is one, and the last
     pass, which the Amen belongs to."""
+    # A silence starts a new verse only if what follows begins the way the
+    # hymn begins; a rest inside the verse or the chorus is followed by
+    # something else.
+    def opening(at):
+        top = {}
+        for s, e, st, p in notes:
+            if s >= at and st == 0 and s < at + 4 * Q * 4:
+                q = s // CLUSTER
+                top[q] = max(top.get(q, 0), p)
+        return [top[q] for q in sorted(top)][:4]
+    first = opening(notes[0][0])
     end = 0; starts = [notes[0][0]]
     for s, e, *_ in notes:
-        if end and s > end + VERSE_GAP:
+        if end and s > end + VERSE_GAP and opening(s) == first:
             starts.append(s)
         end = max(end, e)
     if len(starts) == 1:
@@ -111,12 +122,35 @@ def quantize(notes, start=None):
     # distance past that beat is how late the playing starts. Lateness only
     # grows from there, so it cannot be read from later notes.
     shift = raw[0] - LEAD if raw[0] >= LEAD else raw[0] % GRID
+    def landing(at, lateness):
+        """How many of the next notes land on an eighth-note grid if the
+        playing is this late from note `at` on. Hymns seldom move in
+        sixteenths, so a wrong reading of a pause shows as many of them."""
+        good, late = 0, lateness
+        for t in raw[at:at + 8]:
+            r = t - late
+            qt = (r + GRID // 2 - 10) // GRID * GRID
+            late += r - qt
+            good += (qt % (2 * GRID) == 0)
+        return good
+
     q, breaths = [], []
     for i, t in enumerate(raw):
         r = t - shift
         # Lateness only ever grows, by up to half a sixteenth at a breath,
         # so a note that is ambiguous belongs to the earlier grid point.
         qt = (r + GRID // 2 - 10) // GRID * GRID
+        # A longer pause, before a chorus say, can be more than that. It
+        # comes after a long note, at the end of a line: there, when this
+        # note is late, try reading up to an eighth more of it as pause and
+        # keep whichever puts what follows back on the beat.
+        floor = r // GRID * GRID
+        if i and r - floor >= BREATH and t - raw[i - 1] >= 2 * Q - GRID:
+            default = qt
+            # The plain rounding, or more of the lateness read as pause:
+            # never less.
+            options = [c for c in {default, floor, floor - GRID, floor - 2 * GRID} if c > q[-1] and c <= default]
+            qt = max(options, key=lambda c: (landing(i + 1, shift + r - c), -abs(c - default)))
         if i and r - qt >= BREATH:
             breaths.append(qt)
         shift += r - qt
@@ -369,6 +403,169 @@ def guess_pickup(mel, ends, L, beat):
     return ranked[0][1], sure
 
 
+# ---------------------------------------------------------------- words
+
+def book_bars(lyrics):
+    """The book's bars in order through every line of music. Each is a list
+    of pieces (line, left, right) in pixels: one piece, or two when the bar
+    is split across a line break."""
+    out = []
+    for si, s in enumerate(lyrics['systems']):
+        left = s['start'] - 6
+        # The line's opening stroke, before the first syllable, is no barline;
+        # a double bar counts once.
+        xs = []
+        for x in s['bars']:
+            if x <= left:
+                continue
+            if xs and x - xs[-1] < 15:
+                xs[-1] = x
+            else:
+                xs.append(x)
+        for x in xs:
+            out.append([(si, left, x)]); left = x
+        if s['width'] - left > 40:
+            out.append([(si, left, s['width'])])
+    return out
+
+
+def width(bar):
+    return sum(b - a for _, a, b in bar)
+
+
+def fit_bars(book, count):
+    """Make the book's bars as many as the score's. First, a bar split
+    across a line break shows as a short piece ending one line and another
+    starting the next: join those. Then a barline the reading missed leaves
+    one bar twice as wide, so split the widest; a stroke taken for a barline
+    leaves two narrow ones, so join the narrowest pair."""
+    book = [list(b) for b in book]
+    if len(book) > count:
+        typical = sorted(width(b) for b in book)[len(book) // 2]
+        i = 0
+        while i < len(book) - 1 and len(book) > count:
+            a, b = book[i], book[i + 1]
+            if a[-1][0] != b[0][0] and width(a) < 0.8 * typical and width(b) < 0.8 * typical:
+                book[i:i + 2] = [a + b]
+            i += 1
+    while len(book) < count:
+        i = max(range(len(book)), key=lambda i: width(book[i]) if len(book[i]) == 1 else 0)
+        (si, a, b), = book[i]
+        book[i:i + 1] = [[(si, a, (a + b) / 2)], [(si, (a + b) / 2, b)]]
+    while len(book) > count:
+        pairs = [i for i in range(len(book) - 1) if book[i][-1][0] == book[i + 1][0][0]]
+        if not pairs:
+            break
+        i = min(pairs, key=lambda i: width(book[i]) + width(book[i + 1]))
+        (si, a, _), (_, _, b) = book[i][-1], book[i + 1][0]
+        book[i:i + 2] = [book[i][:-1] + [(si, a, b)] + book[i + 1][1:]]
+    return book
+
+
+PAD = 0.06          # a bar's first note sits a little past its barline
+
+
+def place_words(parts, bars, lyrics, beat, report):
+    """Which soprano note each syllable of each verse goes under. Returns
+    {id(note): [(verse, text, syllabic)]}."""
+    mel = [n for n in melody(parts) if n[0] < bars[-1][0] + bars[-1][1]]
+    book = fit_bars(book_bars(lyrics), len(bars))
+    report['words'] = {'bars': 'matched' if len(book) == len(bars) else f'{len(book)} in the book, {len(bars)} here'}
+    placed = {}
+
+    def when(s):
+        """The moment in the score a printed syllable sits at."""
+        if s['x'] is None:
+            return None
+        best = None
+        for g, bar in enumerate(book[:len(bars)]):
+            done = 0
+            for si, a, b in bar:
+                if si == s['system']:
+                    d = 0 if a <= s['x'] < b else min(abs(s['x'] - a), abs(s['x'] - b))
+                    if best is None or d < best[0]:
+                        best = (d, g, (done + (s['x'] - a)) / max(1, width(bar)), bar)
+                done += b - a
+        if best is None:
+            return None
+        _, g, f, bar = best
+        # A bar's first note sits a little past its barline.
+        f = max(0.0, min(1.0, (f - PAD) / (1 - PAD))) if len(bar) == 1 else max(0.0, min(1.0, f))
+        return bars[g][0] + f * bars[g][1]
+
+    unmatched = 0
+
+    def align(syl, notes):
+        """Each syllable to a note, in order; notes passed over are a
+        syllable held across several, so cost a little, not much."""
+        nonlocal unmatched
+        if not syl or not notes:
+            return []
+        t = [when(s) for s in syl]
+        # A syllable the print did not show sits between its neighbours.
+        known = [i for i, x in enumerate(t) if x is not None]
+        if not known:
+            t = [notes[0][0]] * len(t)
+        for i in range(len(t)):
+            if t[i] is None:
+                lo = max((k for k in known if k < i), default=None)
+                hi = min((k for k in known if k > i), default=None)
+                if lo is not None and hi is not None:
+                    t[i] = t[lo] + (t[hi] - t[lo]) * (i - lo) / (hi - lo)
+                else:
+                    t[i] = t[lo if lo is not None else hi]
+        S, N, SKIP = len(syl), len(notes), 0.15
+        if S > N:
+            unmatched += S - N
+            syl, t, S = syl[:N], t[:N], N
+        INF = float('inf')
+        # A short note off the beat is most often the second half of a
+        # syllable held over two, so it costs more to give it one of its own.
+        off = [0.35 if (n[0] % beat and n[1] < beat) else 0.0 for n in notes]
+        cost = [[INF] * N for _ in range(S)]
+        back = [[-1] * N for _ in range(S)]
+        for j in range(N):
+            cost[0][j] = abs(t[0] - notes[j][0]) / beat + off[j] + SKIP * j
+        for i in range(1, S):
+            best, arg = INF, -1
+            for j in range(N):
+                if j - 1 >= 0 and cost[i - 1][j - 1] - SKIP * (j - 1) < best:
+                    best, arg = cost[i - 1][j - 1] - SKIP * (j - 1), j - 1
+                if arg >= 0:
+                    cost[i][j] = abs(t[i] - notes[j][0]) / beat + off[j] + best + SKIP * (j - 1)
+                    back[i][j] = arg
+        j = min(range(N), key=lambda j: cost[S - 1][j])
+        chosen = [0] * S
+        for i in range(S - 1, -1, -1):
+            chosen[i] = j
+            j = back[i][j]
+        return list(zip(syl, (notes[j] for j in chosen)))
+
+    def label(pairs, verse):
+        for i, (s, n) in enumerate(pairs):
+            before = i > 0 and pairs[i - 1][0]['hyphen']
+            syllabic = ('middle' if before else 'begin') if s['hyphen'] else ('end' if before else 'single')
+            placed.setdefault(id(n), []).append((verse, s['text'], syllabic))
+
+    # The chorus starts at the first bar of its first line of music; the
+    # verses have the notes before it, the chorus the notes from there on.
+    chorus_at = None
+    if lyrics.get('refrain') and lyrics.get('refrain_from') is not None:
+        g = next((g for g, bar in enumerate(book) if bar[0][0] == lyrics['refrain_from']), None)
+        if g is not None and g < len(bars):
+            chorus_at = bars[g][0]
+    verse_notes = [n for n in mel if chorus_at is None or n[0] < chorus_at]
+    for vi, syl in enumerate(lyrics['verses']):
+        label(align(syl, verse_notes), vi + 1)
+    if chorus_at is not None:
+        label(align(lyrics['refrain'], [n for n in mel if n[0] >= chorus_at]), 1)
+        report['words']['chorus'] = True
+    report['words']['verses'] = len(lyrics['verses'])
+    if unmatched:
+        report['words']['left over'] = unmatched
+    return placed
+
+
 # ---------------------------------------------------------------- writing
 
 SHARPS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
@@ -432,7 +629,7 @@ def accidentals(part, k):
             state[slot] = p.alter
 
 
-def build(parts, bars, meta, title):
+def build(parts, bars, meta, title, words=None):
     sc = stream.Score()
     sc.metadata = metadata.Metadata(title=title)
     ks = next((v for _, kind, v in meta if kind == 'key'), None)
@@ -463,7 +660,8 @@ def build(parts, bars, meta, title):
             for vi, seq in enumerate(parts[st]):
                 v = stream.Voice(id=str(vi + 1))
                 pos = b0
-                for on, length, p, ferm in seq:
+                for item in seq:
+                    on, length, p, ferm = item[:4]
                     s, e = max(on, b0), min(on + length, b1)
                     if s >= e:
                         continue
@@ -481,6 +679,11 @@ def build(parts, bars, meta, title):
                         last_piece = (e == on + length and ci == len(chunks) - 1)
                         if not (first_piece and last_piece):
                             n.tie = tie.Tie('start' if first_piece else 'stop' if last_piece else 'continue')
+                        # The words sit under the soprano, so between the
+                        # staves, as printed.
+                        if first_piece and words and id(item) in words:
+                            for verse, text, syllabic in words[id(item)]:
+                                n.lyrics.append(note.Lyric(text=text, number=verse, syllabic=syllabic))
                         # One fermata a staff, as printed: over the treble's
                         # upper voice, under the bass's lower one.
                         if ferm and last_piece and vi == st:
@@ -534,7 +737,7 @@ def end_at_barlines(parts, bars):
                 n[1] = min(n[1], stop - n[0])
 
 
-def convert(path, out, title, override=None, book=None):
+def convert(path, out, title, override=None, book=None, lyrics=None):
     """Write the score for one tune and return a report on how it went."""
     override = override or {}
     report = {'fermatas': 0, 'pickup': 0, 'pickup_source': None, 'mode': None, 'amen': False}
@@ -546,6 +749,7 @@ def convert(path, out, title, override=None, book=None):
     end_at_barlines(parts, bars)
     bars = [b for b in bars if b[0] < song_end(parts)]
     verse_end = bars[-1][0] + bars[-1][1]
+    words = place_words(parts, bars, lyrics, 4 * Q // den, report) if lyrics else None
 
     if amen:
         # The Amen is played slowly, each chord held for a bar or more, so its
@@ -573,10 +777,15 @@ def convert(path, out, title, override=None, book=None):
                 parts[st][i] += ap[st][i]
         bars += abars
         report['amen'] = True
+        # "A-men" goes under the Amen, on the first verse's line.
+        if words is not None:
+            sop = [n for n in parts[0][0] if n[0] >= verse_end][:2]
+            for n, (text, syl) in zip(sop, [('A', 'begin'), ('men.', 'end')] if len(sop) == 2 else [('Amen.', 'single')]):
+                words[id(n)] = [(1, text, syl)]
 
     if override.get('notes'):
         report['note'] = override['notes']
-    sc = build(parts, bars, meta, title)
+    sc = build(parts, bars, meta, title, words)
     sc.write('musicxml', fp=out)
     report['bars'] = len(bars)
     return report

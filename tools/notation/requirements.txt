@@ -3,3 +3,4 @@ music21==10.5.1
 verovio==6.3.0
 numpy==2.5.4
 pillow==13.0.0
+pyphen==0.18.1

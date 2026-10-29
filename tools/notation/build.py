@@ -26,11 +26,15 @@ def one(name):
     over = M.load_overrides().get(key) or {}
     # The book's first line shows the hymn's first tune, Th1_549 or Th1_549f;
     # a second tune (Th1_549s) is printed further on, so it says nothing there.
-    book = None
+    book, words = None, None
     if key.isdigit() or (key.endswith('f') and key[:-1].isdigit()):
         book = M.load_book_facts().get(key.rstrip('f'))
+        # The words, where lyrics.py has read them from the book.
+        path = os.path.join(OUT, 'lyrics', key.rstrip('f').zfill(3) + '.json')
+        if os.path.exists(path):
+            words = json.load(open(path))
     try:
-        r = M.convert(os.path.join(TUNES, name), os.path.join(OUT, n + '.musicxml'), 'Hymn ' + n, over, book)
+        r = M.convert(os.path.join(TUNES, name), os.path.join(OUT, n + '.musicxml'), 'Hymn ' + n, over, book, words)
         r['check'] = r['pickup_source'] in ('unsure', 'book, not tune') or r['mode'] == 'mixed meter'
         return n, r
     except Exception as e:
