@@ -1,0 +1,1941 @@
+{
+ "_about": "Read from the scanned book by bookfacts.py. For each hymn, how many syllables of verse 1 come before the first barline.",
+ "1": {
+  "syllables_before_first_bar": 1
+ },
+ "2": {
+  "syllables_before_first_bar": 4
+ },
+ "4": {
+  "syllables_before_first_bar": 3
+ },
+ "6": {
+  "syllables_before_first_bar": 3
+ },
+ "7": {
+  "syllables_before_first_bar": 1
+ },
+ "9": {
+  "syllables_before_first_bar": 4
+ },
+ "10": {
+  "syllables_before_first_bar": 3
+ },
+ "11": {
+  "syllables_before_first_bar": 3
+ },
+ "12": {
+  "syllables_before_first_bar": 1
+ },
+ "13": {
+  "syllables_before_first_bar": 4
+ },
+ "14": {
+  "syllables_before_first_bar": 1
+ },
+ "15": {
+  "syllables_before_first_bar": 3
+ },
+ "16": {
+  "syllables_before_first_bar": 6
+ },
+ "17": {
+  "syllables_before_first_bar": 1
+ },
+ "19": {
+  "syllables_before_first_bar": 1
+ },
+ "20": {
+  "syllables_before_first_bar": 3
+ },
+ "21": {
+  "syllables_before_first_bar": 6
+ },
+ "22": {
+  "syllables_before_first_bar": 1
+ },
+ "23": {
+  "syllables_before_first_bar": 1
+ },
+ "24": {
+  "syllables_before_first_bar": 1
+ },
+ "25": {
+  "syllables_before_first_bar": 3
+ },
+ "27": {
+  "syllables_before_first_bar": 3
+ },
+ "28": {
+  "syllables_before_first_bar": 1
+ },
+ "29": {
+  "syllables_before_first_bar": 4
+ },
+ "30": {
+  "syllables_before_first_bar": 4
+ },
+ "31": {
+  "syllables_before_first_bar": 8
+ },
+ "32": {
+  "syllables_before_first_bar": 1
+ },
+ "33": {
+  "syllables_before_first_bar": 1
+ },
+ "34": {
+  "syllables_before_first_bar": 3
+ },
+ "35": {
+  "syllables_before_first_bar": 1
+ },
+ "36": {
+  "syllables_before_first_bar": 4
+ },
+ "37": {
+  "syllables_before_first_bar": 1
+ },
+ "38": {
+  "syllables_before_first_bar": 1
+ },
+ "39": {
+  "syllables_before_first_bar": 3
+ },
+ "40": {
+  "syllables_before_first_bar": 1
+ },
+ "41": {
+  "syllables_before_first_bar": 1
+ },
+ "42": {
+  "syllables_before_first_bar": 4
+ },
+ "43": {
+  "syllables_before_first_bar": 3
+ },
+ "46": {
+  "syllables_before_first_bar": 5
+ },
+ "47": {
+  "syllables_before_first_bar": 2
+ },
+ "48": {
+  "syllables_before_first_bar": 1
+ },
+ "49": {
+  "syllables_before_first_bar": 4
+ },
+ "50": {
+  "syllables_before_first_bar": 3
+ },
+ "51": {
+  "syllables_before_first_bar": 1
+ },
+ "52": {
+  "syllables_before_first_bar": 3
+ },
+ "53": {
+  "syllables_before_first_bar": 2
+ },
+ "55": {
+  "syllables_before_first_bar": 1
+ },
+ "56": {
+  "syllables_before_first_bar": 1
+ },
+ "57": {
+  "syllables_before_first_bar": 13
+ },
+ "59": {
+  "syllables_before_first_bar": 1
+ },
+ "60": {
+  "syllables_before_first_bar": 4
+ },
+ "61": {
+  "syllables_before_first_bar": 3
+ },
+ "62": {
+  "syllables_before_first_bar": 3
+ },
+ "63": {
+  "syllables_before_first_bar": 6
+ },
+ "64": {
+  "syllables_before_first_bar": 3
+ },
+ "65": {
+  "syllables_before_first_bar": 1
+ },
+ "66": {
+  "syllables_before_first_bar": 5
+ },
+ "67": {
+  "syllables_before_first_bar": 3
+ },
+ "68": {
+  "syllables_before_first_bar": 2
+ },
+ "69": {
+  "syllables_before_first_bar": 15
+ },
+ "70": {
+  "syllables_before_first_bar": 2
+ },
+ "71": {
+  "syllables_before_first_bar": 10
+ },
+ "72": {
+  "syllables_before_first_bar": 1
+ },
+ "73": {
+  "syllables_before_first_bar": 1
+ },
+ "74": {
+  "syllables_before_first_bar": 1
+ },
+ "75": {
+  "syllables_before_first_bar": 3
+ },
+ "76": {
+  "syllables_before_first_bar": 1
+ },
+ "78": {
+  "syllables_before_first_bar": 6
+ },
+ "79": {
+  "syllables_before_first_bar": 1
+ },
+ "80": {
+  "syllables_before_first_bar": 4
+ },
+ "81": {
+  "syllables_before_first_bar": 1
+ },
+ "82": {
+  "syllables_before_first_bar": 3
+ },
+ "83": {
+  "syllables_before_first_bar": 1
+ },
+ "84": {
+  "syllables_before_first_bar": 1
+ },
+ "85": {
+  "syllables_before_first_bar": 1
+ },
+ "86": {
+  "syllables_before_first_bar": 1
+ },
+ "87": {
+  "syllables_before_first_bar": 4
+ },
+ "89": {
+  "syllables_before_first_bar": 3
+ },
+ "90": {
+  "syllables_before_first_bar": 1
+ },
+ "91": {
+  "syllables_before_first_bar": 3
+ },
+ "92": {
+  "syllables_before_first_bar": 1
+ },
+ "93": {
+  "syllables_before_first_bar": 1
+ },
+ "94": {
+  "syllables_before_first_bar": 1
+ },
+ "95": {
+  "syllables_before_first_bar": 7
+ },
+ "96": {
+  "syllables_before_first_bar": 1
+ },
+ "97": {
+  "syllables_before_first_bar": 1
+ },
+ "98": {
+  "syllables_before_first_bar": 1
+ },
+ "99": {
+  "syllables_before_first_bar": 4
+ },
+ "101": {
+  "syllables_before_first_bar": 3
+ },
+ "102": {
+  "syllables_before_first_bar": 3
+ },
+ "103": {
+  "syllables_before_first_bar": 3
+ },
+ "104": {
+  "syllables_before_first_bar": 1
+ },
+ "105": {
+  "syllables_before_first_bar": 10
+ },
+ "106": {
+  "syllables_before_first_bar": 1
+ },
+ "107": {
+  "syllables_before_first_bar": 4
+ },
+ "109": {
+  "syllables_before_first_bar": 1
+ },
+ "110": {
+  "syllables_before_first_bar": 1
+ },
+ "111": {
+  "syllables_before_first_bar": 12
+ },
+ "112": {
+  "syllables_before_first_bar": 4
+ },
+ "113": {
+  "syllables_before_first_bar": 14
+ },
+ "114": {
+  "syllables_before_first_bar": 3
+ },
+ "115": {
+  "syllables_before_first_bar": 3
+ },
+ "116": {
+  "syllables_before_first_bar": 1
+ },
+ "117": {
+  "syllables_before_first_bar": 3
+ },
+ "119": {
+  "syllables_before_first_bar": 1
+ },
+ "120": {
+  "syllables_before_first_bar": 1
+ },
+ "121": {
+  "syllables_before_first_bar": 1
+ },
+ "122": {
+  "syllables_before_first_bar": 2
+ },
+ "123": {
+  "syllables_before_first_bar": 1
+ },
+ "124": {
+  "syllables_before_first_bar": 4
+ },
+ "125": {
+  "syllables_before_first_bar": 1
+ },
+ "126": {
+  "syllables_before_first_bar": 2
+ },
+ "127": {
+  "syllables_before_first_bar": 4
+ },
+ "128": {
+  "syllables_before_first_bar": 4
+ },
+ "129": {
+  "syllables_before_first_bar": 3
+ },
+ "130": {
+  "syllables_before_first_bar": 4
+ },
+ "131": {
+  "syllables_before_first_bar": 1
+ },
+ "132": {
+  "syllables_before_first_bar": 4
+ },
+ "133": {
+  "syllables_before_first_bar": 1
+ },
+ "134": {
+  "syllables_before_first_bar": 3
+ },
+ "135": {
+  "syllables_before_first_bar": 3
+ },
+ "136": {
+  "syllables_before_first_bar": 1
+ },
+ "137": {
+  "syllables_before_first_bar": 2
+ },
+ "138": {
+  "syllables_before_first_bar": 1
+ },
+ "139": {
+  "syllables_before_first_bar": 4
+ },
+ "140": {
+  "syllables_before_first_bar": 5
+ },
+ "141": {
+  "syllables_before_first_bar": 5
+ },
+ "142": {
+  "syllables_before_first_bar": 2
+ },
+ "143": {
+  "syllables_before_first_bar": 1
+ },
+ "144": {
+  "syllables_before_first_bar": 1
+ },
+ "145": {
+  "syllables_before_first_bar": 2
+ },
+ "147": {
+  "syllables_before_first_bar": 1
+ },
+ "148": {
+  "syllables_before_first_bar": 8
+ },
+ "149": {
+  "syllables_before_first_bar": 3
+ },
+ "150": {
+  "syllables_before_first_bar": 8
+ },
+ "151": {
+  "syllables_before_first_bar": 1
+ },
+ "152": {
+  "syllables_before_first_bar": 5
+ },
+ "153": {
+  "syllables_before_first_bar": 1
+ },
+ "154": {
+  "syllables_before_first_bar": 4
+ },
+ "155": {
+  "syllables_before_first_bar": 1
+ },
+ "156": {
+  "syllables_before_first_bar": 1
+ },
+ "157": {
+  "syllables_before_first_bar": 1
+ },
+ "158": {
+  "syllables_before_first_bar": 4
+ },
+ "160": {
+  "syllables_before_first_bar": 1
+ },
+ "161": {
+  "syllables_before_first_bar": 6
+ },
+ "162": {
+  "syllables_before_first_bar": 1
+ },
+ "163": {
+  "syllables_before_first_bar": 1
+ },
+ "164": {
+  "syllables_before_first_bar": 4
+ },
+ "165": {
+  "syllables_before_first_bar": 4
+ },
+ "166": {
+  "syllables_before_first_bar": 1
+ },
+ "167": {
+  "syllables_before_first_bar": 3
+ },
+ "168": {
+  "syllables_before_first_bar": 4
+ },
+ "169": {
+  "syllables_before_first_bar": 15
+ },
+ "170": {
+  "syllables_before_first_bar": 2
+ },
+ "171": {
+  "syllables_before_first_bar": 3
+ },
+ "172": {
+  "syllables_before_first_bar": 1
+ },
+ "173": {
+  "syllables_before_first_bar": 1
+ },
+ "174": {
+  "syllables_before_first_bar": 4
+ },
+ "175": {
+  "syllables_before_first_bar": 4
+ },
+ "176": {
+  "syllables_before_first_bar": 1
+ },
+ "178": {
+  "syllables_before_first_bar": 1
+ },
+ "181": {
+  "syllables_before_first_bar": 3
+ },
+ "183": {
+  "syllables_before_first_bar": 4
+ },
+ "184": {
+  "syllables_before_first_bar": 5
+ },
+ "185": {
+  "syllables_before_first_bar": 2
+ },
+ "186": {
+  "syllables_before_first_bar": 2
+ },
+ "187": {
+  "syllables_before_first_bar": 4
+ },
+ "188": {
+  "syllables_before_first_bar": 1
+ },
+ "189": {
+  "syllables_before_first_bar": 4
+ },
+ "190": {
+  "syllables_before_first_bar": 4
+ },
+ "191": {
+  "syllables_before_first_bar": 1
+ },
+ "196": {
+  "syllables_before_first_bar": 2
+ },
+ "197": {
+  "syllables_before_first_bar": 1
+ },
+ "198": {
+  "syllables_before_first_bar": 4
+ },
+ "199": {
+  "syllables_before_first_bar": 3
+ },
+ "201": {
+  "syllables_before_first_bar": 3
+ },
+ "202": {
+  "syllables_before_first_bar": 1
+ },
+ "203": {
+  "syllables_before_first_bar": 2
+ },
+ "205": {
+  "syllables_before_first_bar": 4
+ },
+ "206": {
+  "syllables_before_first_bar": 6
+ },
+ "207": {
+  "syllables_before_first_bar": 1
+ },
+ "208": {
+  "syllables_before_first_bar": 4
+ },
+ "209": {
+  "syllables_before_first_bar": 1
+ },
+ "210": {
+  "syllables_before_first_bar": 1
+ },
+ "211": {
+  "syllables_before_first_bar": 12
+ },
+ "212": {
+  "syllables_before_first_bar": 1
+ },
+ "213": {
+  "syllables_before_first_bar": 6
+ },
+ "215": {
+  "syllables_before_first_bar": 1
+ },
+ "216": {
+  "syllables_before_first_bar": 5
+ },
+ "217": {
+  "syllables_before_first_bar": 4
+ },
+ "221": {
+  "syllables_before_first_bar": 13
+ },
+ "222": {
+  "syllables_before_first_bar": 9
+ },
+ "223": {
+  "syllables_before_first_bar": 1
+ },
+ "225": {
+  "syllables_before_first_bar": 2
+ },
+ "226": {
+  "syllables_before_first_bar": 5
+ },
+ "227": {
+  "syllables_before_first_bar": 1
+ },
+ "228": {
+  "syllables_before_first_bar": 4
+ },
+ "229": {
+  "syllables_before_first_bar": 6
+ },
+ "230": {
+  "syllables_before_first_bar": 1
+ },
+ "232": {
+  "syllables_before_first_bar": 3
+ },
+ "233": {
+  "syllables_before_first_bar": 1
+ },
+ "235": {
+  "syllables_before_first_bar": 4
+ },
+ "236": {
+  "syllables_before_first_bar": 1
+ },
+ "237": {
+  "syllables_before_first_bar": 4
+ },
+ "238": {
+  "syllables_before_first_bar": 4
+ },
+ "239": {
+  "syllables_before_first_bar": 5
+ },
+ "240": {
+  "syllables_before_first_bar": 1
+ },
+ "242": {
+  "syllables_before_first_bar": 3
+ },
+ "243": {
+  "syllables_before_first_bar": 1
+ },
+ "244": {
+  "syllables_before_first_bar": 14
+ },
+ "245": {
+  "syllables_before_first_bar": 2
+ },
+ "246": {
+  "syllables_before_first_bar": 4
+ },
+ "247": {
+  "syllables_before_first_bar": 4
+ },
+ "249": {
+  "syllables_before_first_bar": 3
+ },
+ "250": {
+  "syllables_before_first_bar": 3
+ },
+ "251": {
+  "syllables_before_first_bar": 3
+ },
+ "252": {
+  "syllables_before_first_bar": 1
+ },
+ "256": {
+  "syllables_before_first_bar": 3
+ },
+ "257": {
+  "syllables_before_first_bar": 1
+ },
+ "259": {
+  "syllables_before_first_bar": 3
+ },
+ "260": {
+  "syllables_before_first_bar": 1
+ },
+ "261": {
+  "syllables_before_first_bar": 5
+ },
+ "262": {
+  "syllables_before_first_bar": 3
+ },
+ "263": {
+  "syllables_before_first_bar": 1
+ },
+ "264": {
+  "syllables_before_first_bar": 5
+ },
+ "265": {
+  "syllables_before_first_bar": 1
+ },
+ "266": {
+  "syllables_before_first_bar": 4
+ },
+ "267": {
+  "syllables_before_first_bar": 1
+ },
+ "268": {
+  "syllables_before_first_bar": 4
+ },
+ "270": {
+  "syllables_before_first_bar": 1
+ },
+ "271": {
+  "syllables_before_first_bar": 1
+ },
+ "272": {
+  "syllables_before_first_bar": 1
+ },
+ "273": {
+  "syllables_before_first_bar": 1
+ },
+ "274": {
+  "syllables_before_first_bar": 3
+ },
+ "275": {
+  "syllables_before_first_bar": 2
+ },
+ "276": {
+  "syllables_before_first_bar": 10
+ },
+ "277": {
+  "syllables_before_first_bar": 1
+ },
+ "278": {
+  "syllables_before_first_bar": 4
+ },
+ "279": {
+  "syllables_before_first_bar": 1
+ },
+ "281": {
+  "syllables_before_first_bar": 13
+ },
+ "282": {
+  "syllables_before_first_bar": 1
+ },
+ "283": {
+  "syllables_before_first_bar": 1
+ },
+ "284": {
+  "syllables_before_first_bar": 7
+ },
+ "286": {
+  "syllables_before_first_bar": 1
+ },
+ "287": {
+  "syllables_before_first_bar": 1
+ },
+ "288": {
+  "syllables_before_first_bar": 10
+ },
+ "289": {
+  "syllables_before_first_bar": 1
+ },
+ "290": {
+  "syllables_before_first_bar": 1
+ },
+ "291": {
+  "syllables_before_first_bar": 3
+ },
+ "292": {
+  "syllables_before_first_bar": 3
+ },
+ "293": {
+  "syllables_before_first_bar": 1
+ },
+ "294": {
+  "syllables_before_first_bar": 1
+ },
+ "295": {
+  "syllables_before_first_bar": 5
+ },
+ "296": {
+  "syllables_before_first_bar": 5
+ },
+ "297": {
+  "syllables_before_first_bar": 1
+ },
+ "298": {
+  "syllables_before_first_bar": 3
+ },
+ "299": {
+  "syllables_before_first_bar": 3
+ },
+ "300": {
+  "syllables_before_first_bar": 4
+ },
+ "301": {
+  "syllables_before_first_bar": 1
+ },
+ "302": {
+  "syllables_before_first_bar": 1
+ },
+ "303": {
+  "syllables_before_first_bar": 1
+ },
+ "304": {
+  "syllables_before_first_bar": 4
+ },
+ "305": {
+  "syllables_before_first_bar": 5
+ },
+ "306": {
+  "syllables_before_first_bar": 1
+ },
+ "307": {
+  "syllables_before_first_bar": 5
+ },
+ "308": {
+  "syllables_before_first_bar": 3
+ },
+ "309": {
+  "syllables_before_first_bar": 3
+ },
+ "310": {
+  "syllables_before_first_bar": 2
+ },
+ "311": {
+  "syllables_before_first_bar": 3
+ },
+ "312": {
+  "syllables_before_first_bar": 5
+ },
+ "313": {
+  "syllables_before_first_bar": 2
+ },
+ "314": {
+  "syllables_before_first_bar": 1
+ },
+ "315": {
+  "syllables_before_first_bar": 4
+ },
+ "316": {
+  "syllables_before_first_bar": 3
+ },
+ "319": {
+  "syllables_before_first_bar": 4
+ },
+ "320": {
+  "syllables_before_first_bar": 9
+ },
+ "321": {
+  "syllables_before_first_bar": 1
+ },
+ "322": {
+  "syllables_before_first_bar": 5
+ },
+ "323": {
+  "syllables_before_first_bar": 3
+ },
+ "324": {
+  "syllables_before_first_bar": 1
+ },
+ "325": {
+  "syllables_before_first_bar": 7
+ },
+ "326": {
+  "syllables_before_first_bar": 5
+ },
+ "327": {
+  "syllables_before_first_bar": 2
+ },
+ "328": {
+  "syllables_before_first_bar": 4
+ },
+ "329": {
+  "syllables_before_first_bar": 1
+ },
+ "330": {
+  "syllables_before_first_bar": 4
+ },
+ "331": {
+  "syllables_before_first_bar": 6
+ },
+ "332": {
+  "syllables_before_first_bar": 1
+ },
+ "333": {
+  "syllables_before_first_bar": 2
+ },
+ "334": {
+  "syllables_before_first_bar": 1
+ },
+ "335": {
+  "syllables_before_first_bar": 3
+ },
+ "336": {
+  "syllables_before_first_bar": 5
+ },
+ "337": {
+  "syllables_before_first_bar": 3
+ },
+ "338": {
+  "syllables_before_first_bar": 1
+ },
+ "339": {
+  "syllables_before_first_bar": 1
+ },
+ "340": {
+  "syllables_before_first_bar": 2
+ },
+ "341": {
+  "syllables_before_first_bar": 1
+ },
+ "342": {
+  "syllables_before_first_bar": 1
+ },
+ "343": {
+  "syllables_before_first_bar": 1
+ },
+ "344": {
+  "syllables_before_first_bar": 12
+ },
+ "345": {
+  "syllables_before_first_bar": 3
+ },
+ "349": {
+  "syllables_before_first_bar": 1
+ },
+ "350": {
+  "syllables_before_first_bar": 1
+ },
+ "351": {
+  "syllables_before_first_bar": 11
+ },
+ "352": {
+  "syllables_before_first_bar": 2
+ },
+ "353": {
+  "syllables_before_first_bar": 1
+ },
+ "354": {
+  "syllables_before_first_bar": 4
+ },
+ "355": {
+  "syllables_before_first_bar": 3
+ },
+ "356": {
+  "syllables_before_first_bar": 3
+ },
+ "357": {
+  "syllables_before_first_bar": 11
+ },
+ "358": {
+  "syllables_before_first_bar": 3
+ },
+ "359": {
+  "syllables_before_first_bar": 1
+ },
+ "360": {
+  "syllables_before_first_bar": 1
+ },
+ "361": {
+  "syllables_before_first_bar": 4
+ },
+ "363": {
+  "syllables_before_first_bar": 1
+ },
+ "364": {
+  "syllables_before_first_bar": 3
+ },
+ "365": {
+  "syllables_before_first_bar": 4
+ },
+ "366": {
+  "syllables_before_first_bar": 5
+ },
+ "367": {
+  "syllables_before_first_bar": 1
+ },
+ "368": {
+  "syllables_before_first_bar": 4
+ },
+ "370": {
+  "syllables_before_first_bar": 12
+ },
+ "371": {
+  "syllables_before_first_bar": 3
+ },
+ "372": {
+  "syllables_before_first_bar": 3
+ },
+ "373": {
+  "syllables_before_first_bar": 4
+ },
+ "374": {
+  "syllables_before_first_bar": 3
+ },
+ "376": {
+  "syllables_before_first_bar": 1
+ },
+ "377": {
+  "syllables_before_first_bar": 1
+ },
+ "378": {
+  "syllables_before_first_bar": 1
+ },
+ "379": {
+  "syllables_before_first_bar": 1
+ },
+ "380": {
+  "syllables_before_first_bar": 7
+ },
+ "381": {
+  "syllables_before_first_bar": 1
+ },
+ "382": {
+  "syllables_before_first_bar": 2
+ },
+ "383": {
+  "syllables_before_first_bar": 5
+ },
+ "384": {
+  "syllables_before_first_bar": 1
+ },
+ "387": {
+  "syllables_before_first_bar": 1
+ },
+ "388": {
+  "syllables_before_first_bar": 1
+ },
+ "389": {
+  "syllables_before_first_bar": 4
+ },
+ "390": {
+  "syllables_before_first_bar": 4
+ },
+ "391": {
+  "syllables_before_first_bar": 3
+ },
+ "392": {
+  "syllables_before_first_bar": 1
+ },
+ "394": {
+  "syllables_before_first_bar": 4
+ },
+ "395": {
+  "syllables_before_first_bar": 4
+ },
+ "396": {
+  "syllables_before_first_bar": 1
+ },
+ "397": {
+  "syllables_before_first_bar": 1
+ },
+ "398": {
+  "syllables_before_first_bar": 1
+ },
+ "399": {
+  "syllables_before_first_bar": 2
+ },
+ "400": {
+  "syllables_before_first_bar": 2
+ },
+ "401": {
+  "syllables_before_first_bar": 4
+ },
+ "402": {
+  "syllables_before_first_bar": 1
+ },
+ "403": {
+  "syllables_before_first_bar": 1
+ },
+ "404": {
+  "syllables_before_first_bar": 5
+ },
+ "405": {
+  "syllables_before_first_bar": 1
+ },
+ "406": {
+  "syllables_before_first_bar": 1
+ },
+ "407": {
+  "syllables_before_first_bar": 4
+ },
+ "408": {
+  "syllables_before_first_bar": 4
+ },
+ "409": {
+  "syllables_before_first_bar": 9
+ },
+ "411": {
+  "syllables_before_first_bar": 3
+ },
+ "413": {
+  "syllables_before_first_bar": 3
+ },
+ "414": {
+  "syllables_before_first_bar": 1
+ },
+ "415": {
+  "syllables_before_first_bar": 4
+ },
+ "416": {
+  "syllables_before_first_bar": 1
+ },
+ "417": {
+  "syllables_before_first_bar": 1
+ },
+ "418": {
+  "syllables_before_first_bar": 3
+ },
+ "420": {
+  "syllables_before_first_bar": 4
+ },
+ "421": {
+  "syllables_before_first_bar": 2
+ },
+ "422": {
+  "syllables_before_first_bar": 1
+ },
+ "423": {
+  "syllables_before_first_bar": 5
+ },
+ "424": {
+  "syllables_before_first_bar": 2
+ },
+ "425": {
+  "syllables_before_first_bar": 1
+ },
+ "426": {
+  "syllables_before_first_bar": 1
+ },
+ "428": {
+  "syllables_before_first_bar": 6
+ },
+ "429": {
+  "syllables_before_first_bar": 1
+ },
+ "430": {
+  "syllables_before_first_bar": 1
+ },
+ "431": {
+  "syllables_before_first_bar": 4
+ },
+ "432": {
+  "syllables_before_first_bar": 2
+ },
+ "433": {
+  "syllables_before_first_bar": 1
+ },
+ "434": {
+  "syllables_before_first_bar": 1
+ },
+ "437": {
+  "syllables_before_first_bar": 2
+ },
+ "438": {
+  "syllables_before_first_bar": 2
+ },
+ "439": {
+  "syllables_before_first_bar": 2
+ },
+ "440": {
+  "syllables_before_first_bar": 1
+ },
+ "441": {
+  "syllables_before_first_bar": 5
+ },
+ "442": {
+  "syllables_before_first_bar": 1
+ },
+ "443": {
+  "syllables_before_first_bar": 2
+ },
+ "445": {
+  "syllables_before_first_bar": 1
+ },
+ "446": {
+  "syllables_before_first_bar": 1
+ },
+ "448": {
+  "syllables_before_first_bar": 1
+ },
+ "449": {
+  "syllables_before_first_bar": 3
+ },
+ "450": {
+  "syllables_before_first_bar": 1
+ },
+ "451": {
+  "syllables_before_first_bar": 2
+ },
+ "452": {
+  "syllables_before_first_bar": 7
+ },
+ "453": {
+  "syllables_before_first_bar": 4
+ },
+ "454": {
+  "syllables_before_first_bar": 3
+ },
+ "455": {
+  "syllables_before_first_bar": 3
+ },
+ "456": {
+  "syllables_before_first_bar": 2
+ },
+ "457": {
+  "syllables_before_first_bar": 3
+ },
+ "458": {
+  "syllables_before_first_bar": 14
+ },
+ "459": {
+  "syllables_before_first_bar": 4
+ },
+ "461": {
+  "syllables_before_first_bar": 4
+ },
+ "462": {
+  "syllables_before_first_bar": 1
+ },
+ "463": {
+  "syllables_before_first_bar": 3
+ },
+ "464": {
+  "syllables_before_first_bar": 1
+ },
+ "466": {
+  "syllables_before_first_bar": 2
+ },
+ "468": {
+  "syllables_before_first_bar": 1
+ },
+ "469": {
+  "syllables_before_first_bar": 1
+ },
+ "470": {
+  "syllables_before_first_bar": 1
+ },
+ "471": {
+  "syllables_before_first_bar": 4
+ },
+ "472": {
+  "syllables_before_first_bar": 4
+ },
+ "473": {
+  "syllables_before_first_bar": 3
+ },
+ "474": {
+  "syllables_before_first_bar": 1
+ },
+ "475": {
+  "syllables_before_first_bar": 4
+ },
+ "477": {
+  "syllables_before_first_bar": 5
+ },
+ "478": {
+  "syllables_before_first_bar": 1
+ },
+ "479": {
+  "syllables_before_first_bar": 4
+ },
+ "480": {
+  "syllables_before_first_bar": 1
+ },
+ "481": {
+  "syllables_before_first_bar": 4
+ },
+ "482": {
+  "syllables_before_first_bar": 5
+ },
+ "483": {
+  "syllables_before_first_bar": 4
+ },
+ "484": {
+  "syllables_before_first_bar": 3
+ },
+ "485": {
+  "syllables_before_first_bar": 4
+ },
+ "486": {
+  "syllables_before_first_bar": 4
+ },
+ "487": {
+  "syllables_before_first_bar": 2
+ },
+ "488": {
+  "syllables_before_first_bar": 1
+ },
+ "489": {
+  "syllables_before_first_bar": 5
+ },
+ "490": {
+  "syllables_before_first_bar": 4
+ },
+ "491": {
+  "syllables_before_first_bar": 3
+ },
+ "492": {
+  "syllables_before_first_bar": 4
+ },
+ "493": {
+  "syllables_before_first_bar": 4
+ },
+ "494": {
+  "syllables_before_first_bar": 2
+ },
+ "495": {
+  "syllables_before_first_bar": 3
+ },
+ "496": {
+  "syllables_before_first_bar": 3
+ },
+ "497": {
+  "syllables_before_first_bar": 6
+ },
+ "498": {
+  "syllables_before_first_bar": 1
+ },
+ "499": {
+  "syllables_before_first_bar": 4
+ },
+ "501": {
+  "syllables_before_first_bar": 4
+ },
+ "502": {
+  "syllables_before_first_bar": 7
+ },
+ "503": {
+  "syllables_before_first_bar": 5
+ },
+ "504": {
+  "syllables_before_first_bar": 4
+ },
+ "505": {
+  "syllables_before_first_bar": 6
+ },
+ "506": {
+  "syllables_before_first_bar": 2
+ },
+ "508": {
+  "syllables_before_first_bar": 1
+ },
+ "509": {
+  "syllables_before_first_bar": 1
+ },
+ "510": {
+  "syllables_before_first_bar": 3
+ },
+ "512": {
+  "syllables_before_first_bar": 9
+ },
+ "513": {
+  "syllables_before_first_bar": 3
+ },
+ "514": {
+  "syllables_before_first_bar": 3
+ },
+ "515": {
+  "syllables_before_first_bar": 1
+ },
+ "516": {
+  "syllables_before_first_bar": 14
+ },
+ "517": {
+  "syllables_before_first_bar": 1
+ },
+ "518": {
+  "syllables_before_first_bar": 3
+ },
+ "520": {
+  "syllables_before_first_bar": 1
+ },
+ "521": {
+  "syllables_before_first_bar": 5
+ },
+ "522": {
+  "syllables_before_first_bar": 1
+ },
+ "523": {
+  "syllables_before_first_bar": 3
+ },
+ "524": {
+  "syllables_before_first_bar": 1
+ },
+ "525": {
+  "syllables_before_first_bar": 3
+ },
+ "526": {
+  "syllables_before_first_bar": 11
+ },
+ "527": {
+  "syllables_before_first_bar": 4
+ },
+ "528": {
+  "syllables_before_first_bar": 1
+ },
+ "529": {
+  "syllables_before_first_bar": 1
+ },
+ "530": {
+  "syllables_before_first_bar": 1
+ },
+ "532": {
+  "syllables_before_first_bar": 12
+ },
+ "533": {
+  "syllables_before_first_bar": 6
+ },
+ "534": {
+  "syllables_before_first_bar": 4
+ },
+ "535": {
+  "syllables_before_first_bar": 1
+ },
+ "536": {
+  "syllables_before_first_bar": 3
+ },
+ "537": {
+  "syllables_before_first_bar": 1
+ },
+ "538": {
+  "syllables_before_first_bar": 3
+ },
+ "539": {
+  "syllables_before_first_bar": 2
+ },
+ "540": {
+  "syllables_before_first_bar": 3
+ },
+ "541": {
+  "syllables_before_first_bar": 1
+ },
+ "542": {
+  "syllables_before_first_bar": 3
+ },
+ "543": {
+  "syllables_before_first_bar": 1
+ },
+ "544": {
+  "syllables_before_first_bar": 1
+ },
+ "545": {
+  "syllables_before_first_bar": 3
+ },
+ "546": {
+  "syllables_before_first_bar": 3
+ },
+ "547": {
+  "syllables_before_first_bar": 4
+ },
+ "548": {
+  "syllables_before_first_bar": 3
+ },
+ "549": {
+  "syllables_before_first_bar": 5
+ },
+ "550": {
+  "syllables_before_first_bar": 4
+ },
+ "551": {
+  "syllables_before_first_bar": 1
+ },
+ "552": {
+  "syllables_before_first_bar": 1
+ },
+ "553": {
+  "syllables_before_first_bar": 5
+ },
+ "556": {
+  "syllables_before_first_bar": 3
+ },
+ "557": {
+  "syllables_before_first_bar": 1
+ },
+ "558": {
+  "syllables_before_first_bar": 1
+ },
+ "559": {
+  "syllables_before_first_bar": 2
+ },
+ "560": {
+  "syllables_before_first_bar": 1
+ },
+ "561": {
+  "syllables_before_first_bar": 3
+ },
+ "562": {
+  "syllables_before_first_bar": 3
+ },
+ "563": {
+  "syllables_before_first_bar": 7
+ },
+ "564": {
+  "syllables_before_first_bar": 1
+ },
+ "565": {
+  "syllables_before_first_bar": 3
+ },
+ "566": {
+  "syllables_before_first_bar": 6
+ },
+ "567": {
+  "syllables_before_first_bar": 5
+ },
+ "568": {
+  "syllables_before_first_bar": 1
+ },
+ "569": {
+  "syllables_before_first_bar": 1
+ },
+ "570": {
+  "syllables_before_first_bar": 2
+ },
+ "571": {
+  "syllables_before_first_bar": 1
+ },
+ "572": {
+  "syllables_before_first_bar": 3
+ },
+ "573": {
+  "syllables_before_first_bar": 3
+ },
+ "574": {
+  "syllables_before_first_bar": 8
+ },
+ "575": {
+  "syllables_before_first_bar": 3
+ },
+ "577": {
+  "syllables_before_first_bar": 1
+ },
+ "578": {
+  "syllables_before_first_bar": 1
+ },
+ "579": {
+  "syllables_before_first_bar": 5
+ },
+ "580": {
+  "syllables_before_first_bar": 8
+ },
+ "581": {
+  "syllables_before_first_bar": 1
+ },
+ "582": {
+  "syllables_before_first_bar": 2
+ },
+ "583": {
+  "syllables_before_first_bar": 2
+ },
+ "584": {
+  "syllables_before_first_bar": 1
+ },
+ "585": {
+  "syllables_before_first_bar": 1
+ },
+ "586": {
+  "syllables_before_first_bar": 1
+ },
+ "587": {
+  "syllables_before_first_bar": 4
+ },
+ "588": {
+  "syllables_before_first_bar": 4
+ },
+ "589": {
+  "syllables_before_first_bar": 1
+ },
+ "590": {
+  "syllables_before_first_bar": 3
+ },
+ "592": {
+  "syllables_before_first_bar": 2
+ },
+ "593": {
+  "syllables_before_first_bar": 2
+ },
+ "594": {
+  "syllables_before_first_bar": 1
+ },
+ "595": {
+  "syllables_before_first_bar": 1
+ },
+ "596": {
+  "syllables_before_first_bar": 4
+ },
+ "597": {
+  "syllables_before_first_bar": 1
+ },
+ "598": {
+  "syllables_before_first_bar": 3
+ },
+ "599": {
+  "syllables_before_first_bar": 1
+ },
+ "600": {
+  "syllables_before_first_bar": 4
+ },
+ "601": {
+  "syllables_before_first_bar": 1
+ },
+ "602": {
+  "syllables_before_first_bar": 4
+ },
+ "603": {
+  "syllables_before_first_bar": 5
+ },
+ "604": {
+  "syllables_before_first_bar": 1
+ },
+ "605": {
+  "syllables_before_first_bar": 3
+ },
+ "606": {
+  "syllables_before_first_bar": 1
+ },
+ "607": {
+  "syllables_before_first_bar": 8
+ },
+ "608": {
+  "syllables_before_first_bar": 5
+ },
+ "609": {
+  "syllables_before_first_bar": 11
+ },
+ "610": {
+  "syllables_before_first_bar": 2
+ },
+ "611": {
+  "syllables_before_first_bar": 4
+ },
+ "612": {
+  "syllables_before_first_bar": 1
+ },
+ "613": {
+  "syllables_before_first_bar": 4
+ },
+ "614": {
+  "syllables_before_first_bar": 1
+ },
+ "615": {
+  "syllables_before_first_bar": 4
+ },
+ "616": {
+  "syllables_before_first_bar": 3
+ },
+ "617": {
+  "syllables_before_first_bar": 3
+ },
+ "618": {
+  "syllables_before_first_bar": 1
+ },
+ "619": {
+  "syllables_before_first_bar": 1
+ },
+ "620": {
+  "syllables_before_first_bar": 4
+ },
+ "621": {
+  "syllables_before_first_bar": 1
+ },
+ "622": {
+  "syllables_before_first_bar": 3
+ },
+ "623": {
+  "syllables_before_first_bar": 4
+ },
+ "624": {
+  "syllables_before_first_bar": 3
+ },
+ "625": {
+  "syllables_before_first_bar": 3
+ },
+ "627": {
+  "syllables_before_first_bar": 1
+ },
+ "628": {
+  "syllables_before_first_bar": 1
+ },
+ "630": {
+  "syllables_before_first_bar": 4
+ },
+ "631": {
+  "syllables_before_first_bar": 1
+ },
+ "632": {
+  "syllables_before_first_bar": 6
+ },
+ "633": {
+  "syllables_before_first_bar": 4
+ },
+ "635": {
+  "syllables_before_first_bar": 1
+ },
+ "636": {
+  "syllables_before_first_bar": 5
+ },
+ "637": {
+  "syllables_before_first_bar": 1
+ },
+ "639": {
+  "syllables_before_first_bar": 2
+ },
+ "641": {
+  "syllables_before_first_bar": 1
+ },
+ "642": {
+  "syllables_before_first_bar": 4
+ },
+ "643": {
+  "syllables_before_first_bar": 4
+ },
+ "644": {
+  "syllables_before_first_bar": 6
+ },
+ "645": {
+  "syllables_before_first_bar": 4
+ },
+ "646": {
+  "syllables_before_first_bar": 1
+ },
+ "647": {
+  "syllables_before_first_bar": 6
+ },
+ "648": {
+  "syllables_before_first_bar": 1
+ },
+ "649": {
+  "syllables_before_first_bar": 4
+ },
+ "651": {
+  "syllables_before_first_bar": 6
+ },
+ "652": {
+  "syllables_before_first_bar": 1
+ },
+ "653": {
+  "syllables_before_first_bar": 6
+ },
+ "654": {
+  "syllables_before_first_bar": 2
+ },
+ "655": {
+  "syllables_before_first_bar": 3
+ },
+ "656": {
+  "syllables_before_first_bar": 1
+ },
+ "657": {
+  "syllables_before_first_bar": 1
+ },
+ "658": {
+  "syllables_before_first_bar": 4
+ },
+ "659": {
+  "syllables_before_first_bar": 5
+ },
+ "660": {
+  "syllables_before_first_bar": 3
+ },
+ "661": {
+  "syllables_before_first_bar": 4
+ },
+ "662": {
+  "syllables_before_first_bar": 3
+ },
+ "663": {
+  "syllables_before_first_bar": 1
+ },
+ "664": {
+  "syllables_before_first_bar": 5
+ },
+ "665": {
+  "syllables_before_first_bar": 3
+ },
+ "666": {
+  "syllables_before_first_bar": 4
+ },
+ "667": {
+  "syllables_before_first_bar": 1
+ },
+ "668": {
+  "syllables_before_first_bar": 2
+ },
+ "669": {
+  "syllables_before_first_bar": 5
+ },
+ "670": {
+  "syllables_before_first_bar": 4
+ },
+ "671": {
+  "syllables_before_first_bar": 15
+ },
+ "672": {
+  "syllables_before_first_bar": 1
+ },
+ "675": {
+  "syllables_before_first_bar": 1
+ },
+ "676": {
+  "syllables_before_first_bar": 5
+ },
+ "677": {
+  "syllables_before_first_bar": 4
+ },
+ "678": {
+  "syllables_before_first_bar": 4
+ },
+ "679": {
+  "syllables_before_first_bar": 1
+ },
+ "680": {
+  "syllables_before_first_bar": 4
+ },
+ "681": {
+  "syllables_before_first_bar": 2
+ },
+ "682": {
+  "syllables_before_first_bar": 4
+ },
+ "683": {
+  "syllables_before_first_bar": 2
+ },
+ "684": {
+  "syllables_before_first_bar": 5
+ },
+ "685": {
+  "syllables_before_first_bar": 6
+ },
+ "686": {
+  "syllables_before_first_bar": 5
+ },
+ "687": {
+  "syllables_before_first_bar": 3
+ },
+ "688": {
+  "syllables_before_first_bar": 2
+ },
+ "689": {
+  "syllables_before_first_bar": 6
+ },
+ "691": {
+  "syllables_before_first_bar": 4
+ },
+ "692": {
+  "syllables_before_first_bar": 5
+ },
+ "693": {
+  "syllables_before_first_bar": 5
+ },
+ "694": {
+  "syllables_before_first_bar": 6
+ },
+ "695": {
+  "syllables_before_first_bar": 3
+ },
+ "696": {
+  "syllables_before_first_bar": 5
+ },
+ "697": {
+  "syllables_before_first_bar": 5
+ },
+ "698": {
+  "syllables_before_first_bar": 6
+ },
+ "699": {
+  "syllables_before_first_bar": 4
+ },
+ "700": {
+  "syllables_before_first_bar": 2
+ },
+ "701": {
+  "syllables_before_first_bar": 6
+ },
+ "702": {
+  "syllables_before_first_bar": 5
+ },
+ "703": {
+  "syllables_before_first_bar": 1
+ },
+ "704": {
+  "syllables_before_first_bar": 4
+ },
+ "705": {
+  "syllables_before_first_bar": 3
+ },
+ "706": {
+  "syllables_before_first_bar": 4
+ },
+ "707": {
+  "syllables_before_first_bar": 6
+ },
+ "708": {
+  "syllables_before_first_bar": 3
+ },
+ "709": {
+  "syllables_before_first_bar": 14
+ },
+ "710": {
+  "syllables_before_first_bar": 1
+ },
+ "711": {
+  "syllables_before_first_bar": 4
+ },
+ "712": {
+  "syllables_before_first_bar": 1
+ },
+ "713": {
+  "syllables_before_first_bar": 7
+ },
+ "714": {
+  "syllables_before_first_bar": 1
+ },
+ "715": {
+  "syllables_before_first_bar": 5
+ },
+ "716": {
+  "syllables_before_first_bar": 6
+ },
+ "717": {
+  "syllables_before_first_bar": 2
+ },
+ "718": {
+  "syllables_before_first_bar": 5
+ },
+ "719": {
+  "syllables_before_first_bar": 2
+ },
+ "720": {
+  "syllables_before_first_bar": 1
+ },
+ "721": {
+  "syllables_before_first_bar": 4
+ },
+ "722": {
+  "syllables_before_first_bar": 5
+ },
+ "723": {
+  "syllables_before_first_bar": 3
+ },
+ "724": {
+  "syllables_before_first_bar": 1
+ },
+ "725": {
+  "syllables_before_first_bar": 5
+ },
+ "727": {
+  "syllables_before_first_bar": 2
+ },
+ "728": {
+  "syllables_before_first_bar": 5
+ },
+ "729": {
+  "syllables_before_first_bar": 11
+ },
+ "730": {
+  "syllables_before_first_bar": 2
+ }
+}

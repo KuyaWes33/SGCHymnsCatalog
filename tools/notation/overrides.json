@@ -1,0 +1,14 @@
+{
+ "_how": "Corrections for hymns the converter gets wrong, or confirms by eye. Key is the tune file's number as in tunes/Th1_<number>.mid, without leading zeros. \"pickup\" is the pickup in beats, 0 for none. \"notes\" is a reminder shown in the report.",
+ "2": { "pickup": 0, "notes": "checked against the book" },
+ "74": { "pickup": 1, "notes": "checked against the book" },
+ "78": { "pickup": 0, "notes": "checked against the book" },
+ "117": { "pickup": 0, "notes": "checked against the book" },
+ "175": { "pickup": 0, "notes": "checked against the book" },
+ "189": { "pickup": 0, "notes": "checked against the book" },
+ "274": { "pickup": 0, "notes": "checked against the book" },
+ "373": { "pickup": 0, "notes": "checked against the book" },
+ "485": { "pickup": 0, "notes": "checked against the book" },
+ "611": { "pickup": 0, "notes": "checked against the book: the tie in bar 2 misled the syllable count" },
+ "677": { "pickup": 0, "notes": "checked against the book" }
+}
