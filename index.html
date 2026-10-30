@@ -783,10 +783,10 @@ img.hero-logo{border-radius:50%;box-shadow:0 0 0 4px var(--surface), 0 0 0 5px v
       </div>
 
       <div class="hymn-body" id="hymnBody">
-        <div id="lyricsWrap"></div>
         <div id="scanWrap" hidden>
           <div class="scan-pages" id="scanPages"></div>
         </div>
+        <div id="lyricsWrap"></div>
       </div>
 
       <div class="pager">
@@ -1027,28 +1027,28 @@ var CONFIG = {
     label: "Play the tune"
   },
 
-  // Notes: the scanned pages of the printed hymnal, as WebP files.
+  // Notes: the music for each hymn, drawn from its tune by the tools in
+  // tools/notation and put in the notes folder by its export step.
   //
-  //   base    the folder in the repository holding the page images
+  //   base    the folder holding the drawings
   //   pattern the file name, where {n} becomes the hymn number padded to
-  //           three digits, so hymn 7 is scans/007.webp
-  //   have    which hymn numbers have a page uploaded, so the Show notes
-  //           button only appears where it will work. Use the string "all"
-  //           once the whole folder is in place.
+  //           three digits, so hymn 7 is notes/007.svg
+  //   list    a file in that folder naming the hymns that have music, and
+  //           which of those carry their words between the staves. The
+  //           others show the verses below the music.
+  //   have    filled in from the list as the app starts
   //   pages   the exceptions. A hymn listed here ignores the pattern and
-  //           shows exactly the files named, in order. Use it for a hymn
-  //           that runs over two images, or for two hymns that share one:
+  //           shows exactly the files named, in order:
   //
-  //             pages: { 27: ["027a.webp", "027b.webp"],
-  //                      45: ["044.webp"] }
-  //
-  //           A hymn listed in pages does not also need to be in have.
+  //             pages: { 27: ["027a.svg", "027b.svg"] }
   //
   // With have empty and pages empty the button stays hidden everywhere.
   scans: {
-    base: "scans",
-    pattern: "{n}.webp",
+    base: "notes",
+    pattern: "{n}.svg",
+    list: "notes.json",
     have: [],
+    words: [],
     pages: {},
     showLabel: "Show notes",
     hideLabel: "Show lyrics"
@@ -1358,13 +1358,16 @@ function loadScan(){
   wrap.innerHTML = "";
   urls.forEach(function(url, i){
     var img = new Image();
-    img.alt = "Printed page for hymn " + state.hymn + (urls.length > 1 ? ", part " + (i+1) + " of " + urls.length : "");
+    img.alt = "Music for hymn " + state.hymn + (urls.length > 1 ? ", part " + (i+1) + " of " + urls.length : "");
     img.onerror = function(){
       var miss = document.createElement("div");
       miss.className = "scan-slot";
-      miss.innerHTML = "<p><strong>This page could not be loaded.</strong></p>" +
-        "<p>Check the connection, or go back to the lyrics.</p>" +
-        '<span class="path">' + escapeHtml(url) + "</span>";
+      miss.innerHTML = "<p><strong>The music for this hymn could not be loaded.</strong></p>" +
+        "<p>It is kept on the phone once it has been opened with a connection. " +
+        "The words are below.</p>";
+      // The words are the fallback, so make sure they are showing.
+      $("lyricsWrap").hidden = false;
+      $("sizeGroup").hidden = false;
       if (img.parentNode) img.parentNode.replaceChild(miss, img);
     };
     img.src = url;
@@ -1377,9 +1380,11 @@ function setView(v, instant){
   state.view = v;
   function apply(){
     if (v === "scan") loadScan();
-    $("lyricsWrap").hidden = (v !== "text");
+    // Music without its words keeps the verses below it.
+    var worded = (CONFIG.scans.words || []).indexOf(state.hymn) > -1;
+    $("lyricsWrap").hidden = (v === "scan" && worded);
     $("scanWrap").hidden = (v !== "scan");
-    $("sizeGroup").hidden = (v === "scan");
+    $("sizeGroup").hidden = (v === "scan" && worded);
     $("notesBtn").setAttribute("aria-pressed", v === "scan" ? "true" : "false");
     $("notesLabel").textContent = v === "scan"
       ? (CONFIG.scans.hideLabel || "Show lyrics")
@@ -1867,6 +1872,21 @@ function applyExtras(list){
   $("buildLine").textContent = ORDER.length + " hymns. Type a number, or search any line.";
   return added + replaced;
 }
+/* Which hymns have music. Until this arrives the Show notes button stays
+   hidden, so a slow connection only delays it. */
+try {
+  var notesList = CONFIG.scans && CONFIG.scans.list;
+  if (notesList) fetch(CONFIG.scans.base.replace(/\/+$/, "") + "/" + notesList, { cache: "no-cache" })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(got){
+      if (!got || !Array.isArray(got.have)) return;
+      CONFIG.scans.have = got.have;
+      CONFIG.scans.words = Array.isArray(got.words) ? got.words : [];
+      if (state.hymn && BY_NUM[state.hymn]) $("notesBtn").hidden = !scanUrls(state.hymn);
+    })
+    .catch(function(){ /* no list yet, or offline before it was kept */ });
+} catch (e) {}
+
 try {
   fetch("extra-hymns.json", { cache: "no-cache" })
     .then(function(r){ return r.ok ? r.json() : null; })

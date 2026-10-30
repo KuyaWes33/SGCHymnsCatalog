@@ -1,14 +1,56 @@
 {
- "_how": "Corrections for hymns the converter gets wrong, or confirms by eye. Key is the tune file's number as in tunes/Th1_<number>.mid, without leading zeros. \"pickup\" is the pickup in beats, 0 for none. \"notes\" is a reminder shown in the report.",
- "2": { "pickup": 0, "notes": "checked against the book" },
- "74": { "pickup": 1, "notes": "checked against the book" },
- "78": { "pickup": 0, "notes": "checked against the book" },
- "117": { "pickup": 0, "notes": "checked against the book" },
- "175": { "pickup": 0, "notes": "checked against the book" },
- "189": { "pickup": 0, "notes": "checked against the book" },
- "274": { "pickup": 0, "notes": "checked against the book" },
- "373": { "pickup": 0, "notes": "checked against the book" },
- "485": { "pickup": 0, "notes": "checked against the book" },
- "611": { "pickup": 0, "notes": "checked against the book: the tie in bar 2 misled the syllable count" },
- "677": { "pickup": 0, "notes": "checked against the book" }
+ "_how": "Corrections for hymns the converter gets wrong, or confirms by eye. Key is the tune file's number as in tunes/Th1_<number>.mid, without leading zeros. \"pickup\" is the pickup in beats, 0 for none. \"notes\" is a reminder shown in the report. \"words\": false leaves the words out of that hymn's score.",
+ "2": {
+  "pickup": 0,
+  "notes": "checked against the book"
+ },
+ "74": {
+  "pickup": 1,
+  "notes": "checked against the book"
+ },
+ "78": {
+  "pickup": 0,
+  "notes": "checked against the book; words left out: words a bar early in the third line",
+  "words": false
+ },
+ "117": {
+  "pickup": 0,
+  "notes": "checked against the book"
+ },
+ "175": {
+  "pickup": 0,
+  "notes": "checked against the book"
+ },
+ "189": {
+  "pickup": 0,
+  "notes": "checked against the book"
+ },
+ "274": {
+  "pickup": 0,
+  "notes": "checked against the book"
+ },
+ "373": {
+  "pickup": 0,
+  "notes": "checked against the book"
+ },
+ "485": {
+  "pickup": 0,
+  "notes": "checked against the book"
+ },
+ "611": {
+  "pickup": 0,
+  "notes": "checked against the book: the tie in bar 2 misled the syllable count"
+ },
+ "677": {
+  "pickup": 0,
+  "notes": "checked against the book"
+ },
+ "13": {
+  "words": false,
+  "notes": "words left out: syllables a note early after the dotted rhythm"
+ },
+ "441": {
+  "words": false,
+  "notes": "words left out: chorus starts part way through a line"
+ }
 }

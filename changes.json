@@ -1,5 +1,14 @@
 [
  {
+  "version": "v6",
+  "date": "2026-10-30",
+  "notes": [
+   "Sheet music: open a hymn and tap Show notes to see its music. 506 hymns have it so far, with more to come as they are checked.",
+   "Eight hymns, among them 1, 14 and 677, show the words between the staves as in the hymnal. The rest show the verses below the music.",
+   "Music you have opened is kept on your phone, so it shows without signal too."
+  ]
+ },
+ {
   "version": "v5",
   "date": "2026-10-25",
   "notes": [

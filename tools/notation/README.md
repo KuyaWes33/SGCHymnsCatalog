@@ -4,8 +4,8 @@ These scripts turn the tune files in `tunes/` into printed-style scores, two
 staves with soprano and alto above, tenor and bass below, so the app can
 show notes without using the book's scans.
 
-Nothing here is used by the app yet. The scores are written to `build/`,
-which is not committed or published.
+The scores are built in `build/`, which is not committed; `export.py` puts
+the checked ones in `notes/`, where the app finds them.
 
 ## Setting up
 
@@ -92,6 +92,19 @@ Tried on 11 hymns so far; 8 match the book. Known gaps:
 - Verses the book prints below the music, not between the staves, are left
   out for now.
 
+## Putting the music in the app
+
+```
+.venv/bin/python tools/notation/export.py
+```
+
+Draws each score as `notes/<number>.svg`, sized for a phone, and writes
+`notes/notes.json`: which hymns have music, and which carry their words.
+Only hymns that converted cleanly and are not marked for checking go in;
+checking one, and noting it in `overrides.json`, adds it at the next
+export. A hymn whose words are wrong can keep its music without them:
+`"words": false` in `overrides.json`.
+
 ## Checking against the book
 
 ```
@@ -128,6 +141,7 @@ midi2score.py     the converter, for one tune
 build.py          every tune, with the report
 bookfacts.py      reads where each hymn's first barline falls from the book
 lyrics.py         reads the words of each verse from the book
+export.py         draws the checked scores into notes/ for the app
 book-facts.json   what bookfacts.py read
 review.py         the page for checking against the book
 render.py         a quick SVG of one score, for looking at

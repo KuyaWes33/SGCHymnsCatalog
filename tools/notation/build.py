@@ -31,7 +31,7 @@ def one(name):
         book = M.load_book_facts().get(key.rstrip('f'))
         # The words, where lyrics.py has read them from the book.
         path = os.path.join(OUT, 'lyrics', key.rstrip('f').zfill(3) + '.json')
-        if os.path.exists(path):
+        if os.path.exists(path) and over.get('words') is not False:
             words = json.load(open(path))
     try:
         r = M.convert(os.path.join(TUNES, name), os.path.join(OUT, n + '.musicxml'), 'Hymn ' + n, over, book, words)

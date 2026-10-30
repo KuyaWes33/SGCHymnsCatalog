@@ -72,6 +72,11 @@ adjustable from 16 to 34 point, and remembered.
 **Play the tune.** For learning a hymn that is unfamiliar. It plays all the
 verses through, so it runs about three minutes.
 
+**Show notes.** The music for the hymn, treble and bass staves, drawn from
+its tune. Tap it again for the words. Where the words are not yet set
+between the staves, the verses stay below the music. 506 hymns have music
+so far; the rest follow as they are checked against the book.
+
 **Dark mode.** Follows the phone's own setting, for when the lights go down.
 
 ---
@@ -110,7 +115,8 @@ certificate is issued. A `.org` reads right for a church.
 ### Limits
 
 GitHub Pages allows a site of up to 1 GB and about 100 GB of traffic a month.
-This app is roughly 8 MB including every tune, so neither is close.
+This app is roughly 45 MB including every tune and all the sheet music, so
+neither is close. A phone only downloads the music for hymns it opens.
 
 ---
 
@@ -122,7 +128,7 @@ Open `index.html` and find `var CONFIG` near the top of the script.
 | --- | --- |
 | `logo` | Path to the church logo, for example `icons/logo.svg`. Leave empty and the app uses its own drawn mark. |
 | `audio` | Already set up for the `tunes` folder. Nothing to change. |
-| `scans` | Leave empty. See the copyright note below. |
+| `scans` | The sheet music, in the `notes` folder. Nothing to change; see "Sheet music" below. |
 
 Replace the files in `icons/` with the church logo when you have one. Keep
 the same names and sizes. The maskable icon needs its artwork inside the
@@ -265,6 +271,22 @@ page. That responsibility sits with the church, not with the app.
 
 ---
 
+## Sheet music
+
+The music in `notes/` is made from the tunes by the tools in
+`tools/notation`; its README says how. After changing anything there:
+
+```
+.venv/bin/python tools/notation/build.py
+.venv/bin/python tools/notation/export.py
+```
+
+then bump `VERSION` in `sw.js` and add a line to `changes.json`, as for any
+release. Only hymns whose music has been checked are exported, so a
+congregation never meets a score with a wrong bar.
+
+---
+
 ## Part seven: what is not included, and why
 
 **Hymn 27 is deliberately absent.** Unlike the rest of the 1961 edition,
@@ -273,9 +295,10 @@ its publisher. The build script refuses to run if it is added back.
 
 **The scanned pages from the printed hymnal are not included.** The hymn
 texts are public domain, but the typesetting and layout of the book belong
-to Great Commission Publications. Ask them in writing before adding scans.
-Until `scans` is set, the Lyrics and Music page switch stays hidden, so
-nobody meets a dead end.
+to Great Commission Publications. The sheet music in the app is drawn
+fresh from the OPC's tunes instead; the scanned book is used only on the
+computer that builds it, to check the music and read where the words go,
+and none of it is published.
 
 **Check the edition.** This app follows the original 1961 numbering, which
 runs to 730. If your congregation's books are a different edition, the
@@ -292,6 +315,8 @@ manifest.webmanifest    makes it installable, sets the icon and launch screen
 sw.js                   offline support
 icons/                  the logo and app icons, made from the church logo
 tunes/                  761 MIDI tunes from the OPC
+notes/                  the sheet music, one drawing per hymn, and notes.json
+tools/notation/         turns the tunes into the sheet music
 extra-hymns.json        hymns you have added or corrected
 changes.json            what changed in each version, shown to people when it arrives
 editor.html             a form that builds extra-hymns.json for you

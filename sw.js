@@ -7,7 +7,7 @@
  * When you change index.html, bump VERSION. Phones pick up the new version
  * the next time they are opened with a connection.
  */
-const VERSION = "v5";
+const VERSION = "v6";
 const SHELL = `hymnal-shell-${VERSION}`;
 const TUNES = "hymnal-tunes";
 
@@ -23,6 +23,7 @@ const SHELL_FILES = [
   "icons/logo.png",
   "extra-hymns.json",
   "changes.json",
+  "notes/notes.json",
 ];
 
 self.addEventListener("install", (event) => {
@@ -65,6 +66,8 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
 
   // Tunes: serve from cache if we have it, otherwise fetch and keep a copy.
+  // (A hymn's music takes the last path below: kept once opened, and
+  // refreshed when corrected.)
   if (/\.(mid|midi|mp3|ogg|wav)$/i.test(url.pathname)) {
     event.respondWith(
       caches.match(req).then((hit) => hit || fetch(req).then((res) => {
@@ -81,7 +84,8 @@ self.addEventListener("fetch", (event) => {
   // Added hymns and the list of changes: network first, so a new hymn or a
   // new note shows up as soon as it is uploaded, with the cached copy kept
   // for when there is no signal.
-  if (url.pathname.endsWith("extra-hymns.json") || url.pathname.endsWith("changes.json")) {
+  if (url.pathname.endsWith("extra-hymns.json") || url.pathname.endsWith("changes.json") ||
+      url.pathname.endsWith("notes/notes.json")) {
     event.respondWith(
       fetch(req)
         .then((res) => {
